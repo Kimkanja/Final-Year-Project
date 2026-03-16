@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% block title %}{{ post['title'] }} – FarmersPulse{% endblock %}
+{% block body_class %}farmer-body{% endblock %}
+{% block content %}
+<div class="fp-layout">
+  <aside class="fp-sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('dashboard', category='market') }}" class="nav-item"><i class="fas fa-chart-line"></i><span>Market Updates</span></a>
+      <a href="{{ url_for('dashboard', category='advisory') }}" class="nav-item"><i class="fas fa-leaf"></i><span>Advisories</span></a>
+      <a href="{{ url_for('dashboard', category='weather') }}" class="nav-item"><i class="fas fa-cloud-sun"></i><span>Weather</span></a>
+      <a href="{{ url_for('dashboard', category='pest') }}" class="nav-item"><i class="fas fa-bug"></i><span>Pest Alerts</span></a>
+      <a href="{{ url_for('saved_posts') }}" class="nav-item"><i class="fas fa-bookmark"></i><span>Saved Posts</span></a>
+      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item"><i class="fas fa-user"></i><span>My Profile</span></a>
+      <a href="{{ url_for('edit_profile') }}" class="nav-item {% if request.endpoint=='edit_profile' %}active{% endif %}"><i class="fas fa-cog"></i><span>Settings</span></a>
+      <a href="{{ url_for('about') }}" class="nav-item {% if request.endpoint in ['about','feedback'] %}active{% endif %}"><i class="fas fa-circle-info"></i><span>About Us</span></a>
+    </nav>
+    <div class="sidebar-footer"><a href="{{ url_for('logout') }}" class="nav-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="fp-main">
+    <header class="fp-topnav">
+      <div class="topnav-left">
+        <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+        <a href="{{ url_for('dashboard') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Feed</a>
+      </div>
+      <div class="topnav-right">
+        <a href="{{ url_for('profile', user_id=current_user.id) }}" class="user-chip">
+          {% if current_user['profile_pic'] %}<img src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" alt="">{% else %}<div class="avatar-initials">{{ current_user['username'][0].upper() }}</div>{% endif %}
+          <span>{{ current_user['full_name'] or current_user['username'] }}</span>
+        </a>
+      </div>
+    </header>
+    <div class="fp-content">
+      <div class="feed-column">
+        <!-- Full Post -->
+        <article class="post-card post-detail-card">
+          <div class="post-meta">
+            <div class="post-author"><div class="avatar-sm">F</div><div><strong>FarmersPulse</strong><span>{{ post['created_at'][:16] }}</span></div></div>
+            <span class="post-category cat-{{ post['category'] or 'general' }}">{{ post['category'] or 'General' }}</span>
+          </div>
+          {% if post['image_url'] %}<img src="{{ post['image_url'] }}" alt="{{ post['title'] }}" class="post-image post-image-full">{% endif %}
+          <div class="post-body">
+            <h2 class="post-title-lg">{{ post['title'] }}</h2>
+            <p class="post-lead">{{ post['short_text'] }}</p>
+            {% if post['full_text'] %}<div class="post-full-content">{{ post['full_text'] }}</div>{% endif %}
+            {% if post['tags'] %}<div class="post-tags">{% for t in post['tags'].split(',') %}{% if t.strip() %}<span class="post-tag">#{{ t.strip() }}</span>{% endif %}{% endfor %}</div>{% endif %}
+            {% if post['target_counties'] %}<div class="post-meta-info"><span><i class="fas fa-map-marker-alt"></i> {{ post['target_counties'] }}</span></div>{% endif %}
+          </div>
+          <div class="post-actions-bar">
+            <div class="post-actions-left">
+              <button class="action-btn like-btn {% if liked_map.get(post['id']) == true %}active{% endif %}" onclick="reactPost({{ post['id'] }},true,this)">
+                <i class="fas fa-thumbs-up"></i> <span class="like-count">{{ likes }}</span> Likes
+              </button>
+              <button class="action-btn dislike-btn {% if liked_map.get(post['id']) == false %}active-dislike{% endif %}" onclick="reactPost({{ post['id'] }},false,this)">
+                <i class="fas fa-thumbs-down"></i> <span class="dislike-count">{{ dislikes }}</span>
+              </button>
+              <button class="action-btn" onclick="sharePost({{ post['id'] }},'{{ post['title']|e }}')"><i class="fas fa-share-nodes"></i> Share</button>
+            </div>
+            <button class="action-btn save-btn {% if post['id'] in saved_ids %}saved{% endif %}" onclick="savePost({{ post['id'] }},this)">
+              <i class="fas fa-bookmark"></i> {% if post['id'] in saved_ids %}Saved{% else %}Save{% endif %}
+            </button>
+          </div>
+        </article>
+
+        <!-- COMMENTS -->
+        <div class="comments-section" id="comments">
+          <h3 class="comments-title"><i class="fas fa-comments"></i> Comments <span class="comment-count-badge">{{ comment_count }}</span></h3>
+          <!-- Add comment -->
+          <div class="add-comment-box">
+            {% if current_user['profile_pic'] %}<img src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" class="avatar-sm" alt="">{% else %}<div class="avatar-sm">{{ current_user['username'][0].upper() }}</div>{% endif %}
+            <div class="comment-input-wrap">
+              <textarea id="commentInput" placeholder="Share your thoughts..." rows="3"></textarea>
+              <div class="comment-actions-row">
+                <button class="btn-comment-submit" onclick="submitComment({{ post['id'] }},null)"><i class="fas fa-paper-plane"></i> Post Comment</button>
+              </div>
+            </div>
+          </div>
+          <!-- Comments list -->
+          <div class="comments-list" id="commentsList">
+            {% for item in comments %}
+            {% set c = item.comment %}
+            <div class="comment-item" id="comment-{{ c['id'] }}">
+              <div class="comment-avatar">
+                {% if c['profile_pic'] %}<img src="{{ url_for('static', filename='uploads/' + c['profile_pic']) }}" class="avatar-sm" alt="">{% else %}<div class="avatar-sm">{{ c['username'][0].upper() }}</div>{% endif %}
+              </div>
+              <div class="comment-content">
+                <div class="comment-header">
+                  <span class="comment-author">{{ c['full_name'] or c['username'] }}</span>
+                  <span class="comment-time">{{ c['created_at'][:16] }}</span>
+                  {% if c['is_flagged'] %}<span style="font-size:11px;color:#c62828;"><i class="fas fa-flag"></i> Flagged</span>{% endif %}
+                  {% if c['user_id'] == current_user['id'] or current_user['role'] == 'admin' %}
+                  <button class="comment-delete-btn" onclick="deleteComment({{ c['id'] }})"><i class="fas fa-trash"></i></button>
+                  {% endif %}
+                </div>
+                <p class="comment-text">{{ c['content'] }}</p>
+                <div class="comment-footer">
+                  <button class="reply-btn" onclick="toggleReply({{ c['id'] }})"><i class="fas fa-reply"></i> Reply</button>
+                </div>
+                <div class="reply-box" id="reply-box-{{ c['id'] }}" style="display:none;">
+                  <textarea placeholder="Write a reply..." rows="2" id="reply-input-{{ c['id'] }}"></textarea>
+                  <button class="btn-reply-submit" onclick="submitComment({{ post['id'] }},{{ c['id'] }})">Reply</button>
+                </div>
+                {% if item.replies %}
+                <div class="replies-list">
+                  {% for r in item.replies %}
+                  <div class="comment-item reply-item" id="comment-{{ r['id'] }}">
+                    <div class="comment-avatar">{% if r['profile_pic'] %}<img src="{{ url_for('static', filename='uploads/' + r['profile_pic']) }}" class="avatar-sm avatar-xs" alt="">{% else %}<div class="avatar-sm avatar-xs">{{ r['username'][0].upper() }}</div>{% endif %}</div>
+                    <div class="comment-content">
+                      <div class="comment-header">
+                        <span class="comment-author">{{ r['full_name'] or r['username'] }}</span>
+                        <span class="comment-time">{{ r['created_at'][:16] }}</span>
+                        {% if r['user_id'] == current_user['id'] or current_user['role'] == 'admin' %}<button class="comment-delete-btn" onclick="deleteComment({{ r['id'] }})"><i class="fas fa-trash"></i></button>{% endif %}
+                      </div>
+                      <p class="comment-text">{{ r['content'] }}</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            {% else %}
+            <div class="empty-comments" id="emptyComments"><i class="fas fa-comment-dots"></i><p>Be the first to comment!</p></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <aside class="right-panel">
+        <div class="widget-card">
+          <h4 class="widget-title"><i class="fas fa-info-circle"></i> Post Info</h4>
+          <div class="post-info-list">
+            <div class="info-row"><span>Category</span><strong>{{ post['category'] or 'General' }}</strong></div>
+            <div class="info-row"><span>Posted</span><strong>{{ post['created_at'][:10] }}</strong></div>
+            <div class="info-row"><span>Source</span><strong>{{ 'AI Model' if post['source']=='ai_model' else 'Editorial' }}</strong></div>
+            {% if post['target_crops'] %}<div class="info-row"><span>Crops</span><strong>{{ post['target_crops'] }}</strong></div>{% endif %}
+            {% if post['target_counties'] %}<div class="info-row"><span>Counties</span><strong>{{ post['target_counties'] }}</strong></div>{% endif %}
+          </div>
+        </div>
+        <div class="widget-card">
+          <h4 class="widget-title"><i class="fas fa-newspaper"></i> Browse More</h4>
+          <a href="{{ url_for('dashboard') }}" class="btn-outline-sm" style="display:block;text-align:center;margin-top:8px;">Back to Feed</a>
+          <a href="{{ url_for('dashboard', category=post['category']) }}" class="btn-primary-sm" style="display:block;text-align:center;margin-top:8px;">More {{ post['category'] }} Posts</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="shareModal" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Share Post</h3><button onclick="document.getElementById('shareModal').style.display='none'"><i class="fas fa-times"></i></button></div>
+    <div class="share-options">
+      <button onclick="copyShareLink()" class="share-option-btn"><i class="fas fa-copy"></i> Copy Link</button>
+      <a id="waShare" href="#" target="_blank" class="share-option-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a id="twShare" href="#" target="_blank" class="share-option-btn twitter"><i class="fab fa-x-twitter"></i> Twitter/X</a>
+    </div>
+    <input type="text" id="shareUrl" class="share-url-input" readonly>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active');});
+document.getElementById('sidebarClose').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+
+function reactPost(id,isLike,btn){
+  fetch(`/like/${id}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_like:isLike})}).then(r=>r.json()).then(d=>{
+    document.querySelector('.like-count').textContent=d.likes;document.querySelector('.dislike-count').textContent=d.dislikes;
+  });
+}
+function savePost(id,btn){fetch(`/save/${id}`,{method:'POST'}).then(r=>r.json()).then(d=>{btn.classList.toggle('saved',d.saved);btn.innerHTML=`<i class="fas fa-bookmark"></i> ${d.saved?'Saved':'Save'}`;});}
+let curShareUrl='';
+function sharePost(id,title){fetch(`/share/${id}`).then(r=>r.json()).then(d=>{curShareUrl=d.url;document.getElementById('shareUrl').value=d.url;document.getElementById('waShare').href=`https://wa.me/?text=${encodeURIComponent(title+' '+d.url)}`;document.getElementById('twShare').href=`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(d.url)}`;document.getElementById('shareModal').style.display='flex';});}
+function copyShareLink(){navigator.clipboard.writeText(curShareUrl);showToast('Link copied!','success');}
+
+function submitComment(postId,parentId){
+  const inputId=parentId?`reply-input-${parentId}`:'commentInput';
+  const content=document.getElementById(inputId).value.trim();
+  if(!content)return;
+  const fd=new FormData();fd.append('content',content);if(parentId)fd.append('parent_id',parentId);
+  fetch(`/comment/${postId}`,{method:'POST',body:fd}).then(r=>r.json()).then(d=>{
+    if(d.error){showToast(d.error,'error');return;}
+    document.getElementById(inputId).value='';
+    if(parentId)document.getElementById(`reply-box-${parentId}`).style.display='none';
+    const empty=document.getElementById('emptyComments');if(empty)empty.remove();
+    const html=`<div class="comment-item" id="comment-${d.id}">
+      <div class="comment-avatar"><div class="avatar-sm">${d.username[0].toUpperCase()}</div></div>
+      <div class="comment-content">
+        <div class="comment-header"><span class="comment-author">${d.full_name}</span><span class="comment-time">Just now</span>
+          <button class="comment-delete-btn" onclick="deleteComment(${d.id})"><i class="fas fa-trash"></i></button></div>
+        <p class="comment-text">${d.content}</p>
+        <div class="comment-footer"><button class="reply-btn" onclick="toggleReply(${d.id})"><i class="fas fa-reply"></i> Reply</button></div>
+        <div class="reply-box" id="reply-box-${d.id}" style="display:none;">
+          <textarea placeholder="Write a reply..." rows="2" id="reply-input-${d.id}"></textarea>
+          <button class="btn-reply-submit" onclick="submitComment(${postId},${d.id})">Reply</button>
+        </div>
+      </div></div>`;
+    if(parentId){
+      let rl=document.querySelector(`#comment-${parentId} .replies-list`);
+      if(!rl){rl=document.createElement('div');rl.className='replies-list';document.querySelector(`#comment-${parentId} .comment-content`).appendChild(rl);}
+      rl.insertAdjacentHTML('beforeend',html);
+    } else {document.getElementById('commentsList').insertAdjacentHTML('afterbegin',html);}
+  });
+}
+function toggleReply(id){const b=document.getElementById(`reply-box-${id}`);b.style.display=b.style.display==='none'?'block':'none';}
+function deleteComment(id){
+  if(!confirm('Delete this comment?'))return;
+  fetch(`/comment/delete/${id}`,{method:'POST'}).then(r=>r.json()).then(d=>{if(d.success)document.getElementById(`comment-${id}`).remove();});
+}
+</script>
+{% endblock %}

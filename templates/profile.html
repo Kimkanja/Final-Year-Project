@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}{{ user['full_name'] or user['username'] }} – FarmersPulse{% endblock %}
+{% block body_class %}farmer-body{% endblock %}
+{% block content %}
+<div class="fp-layout">
+  <aside class="fp-sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('dashboard', category='market') }}" class="nav-item"><i class="fas fa-chart-line"></i><span>Market Updates</span></a>
+      <a href="{{ url_for('dashboard', category='advisory') }}" class="nav-item"><i class="fas fa-leaf"></i><span>Advisories</span></a>
+      <a href="{{ url_for('saved_posts') }}" class="nav-item"><i class="fas fa-bookmark"></i><span>Saved Posts</span></a>
+      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item active"><i class="fas fa-user"></i><span>My Profile</span></a>
+      <a href="{{ url_for('edit_profile') }}" class="nav-item {% if request.endpoint=='edit_profile' %}active{% endif %}"><i class="fas fa-cog"></i><span>Settings</span></a>
+      <a href="{{ url_for('about') }}" class="nav-item {% if request.endpoint in ['about','feedback'] %}active{% endif %}"><i class="fas fa-circle-info"></i><span>About Us</span></a>
+    </nav>
+    <div class="sidebar-footer"><a href="{{ url_for('logout') }}" class="nav-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="fp-main">
+    <header class="fp-topnav">
+      <div class="topnav-left">
+        <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+        <a href="{{ url_for('dashboard') }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Feed</a>
+      </div>
+      <div class="topnav-right">
+        {% if user['id'] == current_user['id'] %}
+        <a href="{{ url_for('edit_profile') }}" class="btn-primary-sm"><i class="fas fa-edit"></i> Edit Profile</a>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="fp-main" style="margin-left:0;">
+      <div class="profile-page-wrap">
+        <!-- Colorful Hero -->
+        <div class="profile-hero">
+          <div class="profile-hero-bg-circles"><span></span><span></span><span></span></div>
+          <div class="profile-hero-inner">
+            <div class="profile-hero-top">
+              <div class="profile-avatar-wrap">
+                {% if user['profile_pic'] %}
+                  <img src="{{ url_for('static', filename='uploads/' + user['profile_pic']) }}" alt="" class="profile-avatar-xl">
+                {% else %}
+                  <div class="avatar-xl-fallback">{{ user['username'][0].upper() }}</div>
+                {% endif %}
+                <div class="profile-online-dot"></div>
+              </div>
+              <div class="profile-hero-info">
+                <h2>{{ user['full_name'] or user['username'] }}</h2>
+                <div class="handle">@{{ user['username'] }}</div>
+                {% if user['bio'] %}<div class="bio">{{ user['bio'] }}</div>{% endif %}
+                <div class="profile-badge-row">
+                  {% if user['county'] %}<span class="profile-badge"><i class="fas fa-map-marker-alt"></i> {{ user['county'] }}</span>{% endif %}
+                  {% if user['farm_size'] %}<span class="profile-badge"><i class="fas fa-expand-arrows-alt"></i> {{ user['farm_size'] }}</span>{% endif %}
+                  {% if user['role'] == 'admin' %}<span class="profile-badge badge-orange"><i class="fas fa-shield-halved"></i> Admin</span>{% endif %}
+                  <span class="profile-badge"><i class="fas fa-calendar-alt"></i> Joined {{ user['created_at'][:7] }}</span>
+                </div>
+              </div>
+              <div class="profile-hero-actions">
+                {% if user['id'] == current_user['id'] %}
+                  <a href="{{ url_for('edit_profile') }}" class="btn-outline-sm" style="border-color:rgba(255,255,255,.3);color:#fff;"><i class="fas fa-edit"></i> Edit Profile</a>
+                {% else %}
+                  <button class="btn-primary-sm follow-btn {% if is_following %}following{% endif %}"
+                    onclick="followUser({{ user['id'] }},this)" id="followBtn">
+                    <i class="fas fa-{% if is_following %}user-check{% else %}user-plus{% endif %}"></i>
+                    {{ 'Following' if is_following else 'Follow' }}
+                  </button>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <!-- Stats strip -->
+          <div class="profile-stats-strip">
+            <div class="pstat"><strong>{{ saved_count }}</strong><span>Saved Posts</span></div>
+            <div class="pstat"><strong>{{ user['county'] or '—' }}</strong><span>County</span></div>
+          </div>
+        </div>
+
+        <!-- Profile Body -->
+        <div class="profile-body">
+          <!-- Info Cards -->
+          <div class="profile-info-grid">
+            <div class="info-card">
+              <div class="info-card-icon green"><i class="fas fa-seedling"></i></div>
+              <div>
+                <h4>Crop Types</h4>
+                <p>{{ user['crop_types'] or 'Not specified' }}</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-icon orange"><i class="fas fa-expand-arrows-alt"></i></div>
+              <div>
+                <h4>Farm Size</h4>
+                <p>{{ user['farm_size'] or 'Not specified' }}</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-icon blue"><i class="fas fa-phone"></i></div>
+              <div>
+                <h4>Phone</h4>
+                <p>{{ user['phone'] or 'Not provided' }}</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <div class="info-card-icon purple"><i class="fas fa-envelope"></i></div>
+              <div>
+                <h4>Email</h4>
+                <p>{{ user['email'] }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saved Posts (viewer's own profile only) -->
+          {% if user['id'] == current_user['id'] and saved_count > 0 %}
+          <div style="margin-bottom:24px;">
+            <h3 class="profile-section-title"><i class="fas fa-bookmark"></i> Saved Posts
+              <a href="{{ url_for('saved_posts') }}" class="btn-outline-sm" style="font-size:12px;margin-left:auto;">View all</a>
+            </h3>
+          </div>
+          {% endif %}
+
+          <!-- Activity note — users can't post -->
+          <div style="background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);padding:28px;text-align:center;">
+            <i class="fas fa-leaf" style="font-size:40px;color:var(--green);opacity:.4;display:block;margin-bottom:12px;"></i>
+            <h4 style="font-family:var(--font-display);font-size:18px;margin-bottom:8px;">Farmer Account</h4>
+            <p style="font-size:14px;color:var(--text-muted);max-width:400px;margin:0 auto;">
+              Farmers read, like, comment, and save content. Posts are published by the FarmersPulse editorial team and AI model.
+              Stay engaged by commenting on posts that matter to your farm.
+            </p>
+            <a href="{{ url_for('dashboard') }}" class="btn-primary-sm" style="margin-top:16px;display:inline-flex;">
+              <i class="fas fa-newspaper"></i> Browse Latest Posts
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active');});
+document.getElementById('sidebarClose').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+function followUser(uid,btn){
+  fetch(`/follow/${uid}`,{method:'POST'}).then(r=>r.json()).then(d=>{
+    btn.classList.toggle('following',d.following);
+    btn.innerHTML=`<i class="fas fa-${d.following?'user-check':'user-plus'}"></i> ${d.following?'Following':'Follow'}`;
+    document.getElementById('followerCount').textContent=d.followers;
+  });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard – FarmersPulse{% endblock %}
+{% block body_class %}admin-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  {% include '_admin_sidebar.html' %}
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
+      <div class="admin-topbar-title"><h1>Dashboard Overview</h1></div>
+      <div class="admin-topbar-right">
+        <a href="{{ url_for('admin_create_post') }}" class="btn-admin-primary"><i class="fas fa-plus"></i> New Post</a>
+      </div>
+    </header>
+    <div class="admin-content">
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-users"><div class="kpi-icon"><i class="fas fa-users"></i></div><div class="kpi-info"><h2>{{ total_users }}</h2><p>Total Farmers</p></div></div>
+        <div class="kpi-card kpi-posts"><div class="kpi-icon"><i class="fas fa-newspaper"></i></div><div class="kpi-info"><h2>{{ total_posts }}</h2><p>Total Posts</p></div><div class="kpi-trend"><span>{{ published_posts }} published</span></div></div>
+        <div class="kpi-card kpi-comments"><div class="kpi-icon"><i class="fas fa-thumbs-up"></i></div><div class="kpi-info"><h2>{{ total_likes }}</h2><p>Total Likes</p></div></div>
+        <div class="kpi-card kpi-ai"><div class="kpi-icon"><i class="fas fa-comments"></i></div><div class="kpi-info"><h2>{{ total_comments }}</h2><p>Comments</p></div></div>
+        <div class="kpi-card kpi-banned"><div class="kpi-icon"><i class="fas fa-ban"></i></div><div class="kpi-info"><h2>{{ banned_users }}</h2><p>Banned Users</p></div></div>
+      </div>
+      <!-- Charts -->
+      <div class="charts-row">
+        <div class="chart-card chart-wide">
+          <div class="chart-card-header"><h3>User & Post Growth (Last 7 Days)</h3></div>
+          <canvas id="growthChart" height="100"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-header"><h3>Posts by Category</h3></div>
+          <canvas id="categoryChart" height="200"></canvas>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-card-header"><h3>Farmers by County</h3></div>
+          <canvas id="countyChart" height="200"></canvas>
+        </div>
+        <div class="chart-card chart-wide">
+          <div class="chart-card-header"><h3><i class="fas fa-fire"></i> Top Posts by Likes</h3><a href="{{ url_for('admin_posts') }}" class="chart-view-all">View all</a></div>
+          <div class="top-posts-list">
+            {% for p in top_posts %}
+            <div class="top-post-item">
+              <div class="top-post-rank">{{ loop.index }}</div>
+              <div class="top-post-info"><a href="{{ url_for('admin_edit_post', pid=p['id']) }}">{{ p['title'][:55] }}{% if p['title']|length > 55 %}…{% endif %}</a><span class="cat-badge cat-{{ p['category'] }}">{{ p['category'] }}</span></div>
+              <div class="top-post-stat"><i class="fas fa-thumbs-up"></i> {{ p['lc'] }}</div>
+            </div>
+            {% else %}<p class="empty-msg" style="color:var(--text-muted);">No posts yet.</p>{% endfor %}
+          </div>
+        </div>
+      </div>
+      <!-- Tables -->
+      <div class="tables-row">
+        <div class="table-card">
+          <div class="table-card-header"><h3><i class="fas fa-users"></i> Recent Users</h3><a href="{{ url_for('admin_users') }}" class="btn-outline-xs">View All</a></div>
+          <div class="table-scroll">
+            <table class="admin-table">
+              <thead><tr><th>User</th><th>County</th><th>Joined</th><th>Status</th></tr></thead>
+              <tbody>
+                {% for u in recent_users %}
+                <tr>
+                  <td><div class="user-cell"><div class="avatar-sm-tbl">{{ u['username'][0].upper() }}</div><div><strong>{{ u['full_name'] or u['username'] }}</strong><br><small>@{{ u['username'] }}</small></div></div></td>
+                  <td>{{ u['county'] or '—' }}</td>
+                  <td>{{ u['created_at'][:10] }}</td>
+                  <td>
+                    {% if u['is_banned'] %}<span class="banned-badge">Banned</span>
+                    {% else %}<span class="status-badge {% if u['is_active'] %}active{% else %}inactive{% endif %}">{{ 'Active' if u['is_active'] else 'Inactive' }}</span>{% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-header"><h3><i class="fas fa-newspaper"></i> Recent Posts</h3><a href="{{ url_for('admin_posts') }}" class="btn-outline-xs">View All</a></div>
+          <div class="table-scroll">
+            <table class="admin-table">
+              <thead><tr><th>Title</th><th>Category</th><th>Source</th><th>Status</th></tr></thead>
+              <tbody>
+                {% for p in recent_posts %}
+                <tr>
+                  <td><a href="{{ url_for('admin_edit_post', pid=p['id']) }}" class="table-link">{{ p['title'][:40] }}{% if p['title']|length > 40 %}…{% endif %}</a></td>
+                  <td><span class="cat-badge cat-{{ p['category'] }}">{{ p['category'] or '—' }}</span></td>
+                  <td><span class="source-badge source-{{ p['source'] }}">{{ 'AI' if p['source']=='ai_model' else 'Manual' }}</span></td>
+                  <td><span class="status-badge {% if p['is_published'] %}active{% else %}inactive{% endif %}">{{ 'Published' if p['is_published'] else 'Draft' }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- AI Integration -->
+      <div class="ai-integration-card">
+        <div class="ai-int-icon"><i class="fas fa-robot"></i></div>
+        <div class="ai-int-info">
+          <h3>AI Model Integration</h3>
+          <p>Your Google Colab model pushes posts to FarmersPulse via the API. Posts land in the AI Queue for your review.</p>
+          <div class="api-endpoint-box"><span class="method-badge">POST</span><code id="apiEp">{{ request.host_url }}api/ai/post</code><button onclick="navigator.clipboard.writeText(document.getElementById('apiEp').textContent);showToast('Copied!','success')" class="copy-btn"><i class="fas fa-copy"></i></button></div>
+          <div class="api-key-box"><span>Header:</span><code>X-API-Key: fp-ai-secret-2025</code></div>
+          <div class="api-body-box"><span>Required:</span><code>title, short_text</code><span>Optional:</span><code>full_text, image_url, category, tags, target_crops, target_counties</code></div>
+        </div>
+        <div class="ai-logs-preview">
+          <h4>Recent AI Submissions</h4>
+          {% for log in ai_logs %}<div class="ai-log-item"><span class="log-status status-{{ log['response_status'] }}">{{ log['response_status'] }}</span><span>Post #{{ log['post_id'] }}</span><small>{{ log['created_at'][:16] }}</small></div>{% else %}<p class="empty-msg">No AI submissions yet.</p>{% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const ug={{ user_growth|safe }},pg={{ post_growth|safe }},cs={{ cat_stats|safe }},cy={{ county_stats|safe }};
+new Chart(document.getElementById('growthChart'),{type:'line',data:{labels:ug.map(d=>d.day),datasets:[{label:'New Users',data:ug.map(d=>d.count),borderColor:'#2e7d32',backgroundColor:'rgba(46,125,50,.1)',tension:.4,fill:true,pointBackgroundColor:'#2e7d32'},{label:'New Posts',data:pg.map(d=>d.count),borderColor:'#ff7f0e',backgroundColor:'rgba(255,127,14,.1)',tension:.4,fill:true,pointBackgroundColor:'#ff7f0e'}]},options:{responsive:true,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+new Chart(document.getElementById('categoryChart'),{type:'doughnut',data:{labels:cs.map(d=>d.label),datasets:[{data:cs.map(d=>d.value),backgroundColor:['#2e7d32','#ff7f0e','#1565c0','#6a1b9a','#c62828','#00838f'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},cutout:'65%'}});
+new Chart(document.getElementById('countyChart'),{type:'bar',data:{labels:cy.map(d=>d.label),datasets:[{label:'Farmers',data:cy.map(d=>d.value),backgroundColor:'rgba(46,125,50,.7)',borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
+document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));
+</script>
+{% endblock %}

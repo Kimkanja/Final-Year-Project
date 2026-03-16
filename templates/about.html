@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}About Us – FarmersPulse{% endblock %}
+{% block body_class %}farmer-body{% endblock %}
+{% block content %}
+<div class="fp-layout">
+  <aside class="fp-sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('dashboard', category='market') }}" class="nav-item"><i class="fas fa-chart-line"></i><span>Market Updates</span></a>
+      <a href="{{ url_for('dashboard', category='advisory') }}" class="nav-item"><i class="fas fa-leaf"></i><span>Advisories</span></a>
+      <a href="{{ url_for('dashboard', category='weather') }}" class="nav-item"><i class="fas fa-cloud-sun"></i><span>Weather</span></a>
+      <a href="{{ url_for('dashboard', category='pest') }}" class="nav-item"><i class="fas fa-bug"></i><span>Pest Alerts</span></a>
+      <a href="{{ url_for('saved_posts') }}" class="nav-item"><i class="fas fa-bookmark"></i><span>Saved Posts</span></a>
+      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item"><i class="fas fa-user"></i><span>My Profile</span></a>
+      <a href="{{ url_for('edit_profile') }}" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></a>
+      <a href="{{ url_for('about') }}" class="nav-item active"><i class="fas fa-circle-info"></i><span>About Us</span></a>
+    </nav>
+    <div class="sidebar-footer"><a href="{{ url_for('logout') }}" class="nav-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="fp-main">
+    <header class="fp-topnav">
+      <div class="topnav-left"><button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button></div>
+      <div class="topnav-right">
+        <a href="{{ url_for('profile', user_id=current_user.id) }}" class="user-chip">
+          {% if current_user['profile_pic'] %}<img src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" alt="">{% else %}<div class="avatar-initials">{{ current_user['username'][0].upper() }}</div>{% endif %}
+          <span>{{ current_user['full_name'] or current_user['username'] }}</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="fp-content">
+      <div class="feed-column">
+
+        <!-- Hero Banner -->
+        <div class="about-hero">
+          <div class="about-hero-bg"></div>
+          <div class="about-hero-content">
+            <div class="about-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span></div>
+            <h1>Empowering Kenya's Farmers with Smart Information</h1>
+            <p>Founded at Maasai Mara University, Narok · Est. 2025</p>
+          </div>
+        </div>
+
+        <!-- Mission -->
+        <div class="about-card">
+          <div class="about-card-icon green"><i class="fas fa-bullseye"></i></div>
+          <div>
+            <h3>Our Mission</h3>
+            <p>FarmersPulse started with a simple idea: to help small-scale Kenyan farmers access reliable, personalized information that makes their work easier and more productive. We use AI to match advisories, market prices, weather alerts, and pest warnings to each farmer's specific location, crops, and context — so every notification you receive is relevant to your farm.</p>
+          </div>
+        </div>
+
+        <!-- How it works -->
+        <div class="about-card">
+          <div class="about-card-icon orange"><i class="fas fa-robot"></i></div>
+          <div>
+            <h3>How the AI Personalization Works</h3>
+            <p>When you set up your profile — your county, your crops, your farm size — our AI model reads that context and filters the information feed specifically for you. A maize farmer in Narok will see different advisories than a tea farmer in Nyeri. The more complete your profile, the better we can serve you.</p>
+          </div>
+        </div>
+
+        <!-- Team -->
+        <div class="about-section-title"><i class="fas fa-users"></i> The Team</div>
+        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#2e7d32,#66bb6a);">DA</div>
+            <div class="team-info">
+              <h4>Dr. Anil Kumar</h4>
+              <span class="team-role">Co-ordinator</span>
+              <p>Coordinated the overall project development and strategic direction.</p>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#1565c0,#42a5f5);">DB</div>
+            <div class="team-info">
+              <h4>Dr. Joash Bii</h4>
+              <span class="team-role">Supervisor</span>
+              <p>Provided academic guidance and oversight throughout the project.</p>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#ff7f0e,#ffb74d);">KP</div>
+            <div class="team-info">
+              <h4>Kimani Peter</h4>
+              <span class="team-role">Lead Developer</span>
+              <p>Developed, implemented and optimized all platform features.</p>
+            </div>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#6a1b9a,#ab47bc);">JW</div>
+            <div class="team-info">
+              <h4>James Wachira</h4>
+              <span class="team-role">Colleague</span>
+              <p>Assisted in research and testing to support development.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="about-card">
+          <div class="about-card-icon blue"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <h3>Where to Find Us</h3>
+            <p><strong>Maasai Mara University</strong> — Narok, Kenya</p>
+            <p style="margin-top:6px;">📞 <a href="tel:0717529368" style="color:var(--green);">0717529368</a> &nbsp;·&nbsp; ✉️ <a href="mailto:hellraisermiser@gmail.com" style="color:var(--green);">hellraisermiser@gmail.com</a></p>
+            <p style="margin-top:6px;font-size:13px;color:var(--text-muted);">Mon–Fri: 9:00 AM – 5:00 PM &nbsp;·&nbsp; Sat: 11:00 AM – 3:30 PM</p>
+          </div>
+        </div>
+
+        <!-- Feedback CTA -->
+        <div class="feedback-cta">
+          <div class="feedback-cta-content">
+            <h3>Have a Suggestion or Found a Bug?</h3>
+            <p>We're constantly improving FarmersPulse. Tell us what's missing, what's working well, or anything you'd like to see added. Your feedback directly shapes how the platform evolves.</p>
+            <a href="{{ url_for('feedback') }}" class="btn-primary-sm" style="margin-top:16px;display:inline-flex;font-size:15px;padding:12px 28px;">
+              <i class="fas fa-paper-plane"></i> Send Feedback
+            </a>
+          </div>
+          <div class="feedback-cta-icon"><i class="fas fa-comments"></i></div>
+        </div>
+
+      </div>
+
+      <!-- Right panel -->
+      <aside class="right-panel">
+        <div class="widget-card">
+          <h4 class="widget-title"><i class="fas fa-circle-info"></i> Quick Info</h4>
+          <div class="post-info-list">
+            <div class="info-row"><span>Founded</span><strong>2025</strong></div>
+            <div class="info-row"><span>Location</span><strong>Narok, Kenya</strong></div>
+            <div class="info-row"><span>University</span><strong>Maasai Mara</strong></div>
+            <div class="info-row"><span>Platform</span><strong>AI-Powered</strong></div>
+            <div class="info-row"><span>Access</span><strong>Free</strong></div>
+          </div>
+        </div>
+        <div class="widget-card" style="background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;">
+          <h4 style="font-size:14px;font-weight:700;margin-bottom:8px;color:#fff;"><i class="fas fa-lightbulb"></i> Help Us Grow</h4>
+          <p style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:12px;">Your feedback helps us make FarmersPulse better for every farmer in Kenya.</p>
+          <a href="{{ url_for('feedback') }}" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;">
+            <i class="fas fa-paper-plane"></i> Give Feedback
+          </a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active');});
+document.getElementById('sidebarClose').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+</script>
+{% endblock %}

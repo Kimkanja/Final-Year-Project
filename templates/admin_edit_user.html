@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Edit User – FarmersPulse Admin{% endblock %}
+{% block body_class %}admin-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  {% include '_admin_sidebar.html' %}
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
+      <div class="admin-topbar-title"><h1>Edit User: @{{ user['username'] }}</h1></div>
+      <div class="admin-topbar-right"><a href="{{ url_for('admin_users') }}" class="btn-admin-outline"><i class="fas fa-arrow-left"></i> Back</a></div>
+    </header>
+    <div class="admin-content">
+      <form method="POST" action="{{ url_for('admin_edit_user', uid=user['id']) }}">
+        <div class="post-form-grid">
+          <div class="post-form-main">
+            <div class="form-card">
+              <h3 class="form-section-title"><i class="fas fa-id-card"></i> User Details</h3>
+              <div class="user-edit-grid">
+                <div class="form-group"><label>Full Name</label><input type="text" name="full_name" value="{{ user['full_name'] or '' }}"></div>
+                <div class="form-group"><label>Email</label><input type="email" name="email" value="{{ user['email'] }}" required></div>
+                <div class="form-group"><label>Phone</label><input type="text" name="phone" value="{{ user['phone'] or '' }}"></div>
+                <div class="form-group"><label>County</label>
+                  <select name="county">
+                    <option value="">Select County</option>
+                    {% for c in ['Narok','Nakuru','Baringo','Trans Nzoia','Uasin Gishu','Nandi','Kisumu','Nyeri','Meru','Machakos','Kiambu','Other'] %}
+                    <option {% if user['county']==c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="form-group"><label>Farm Size</label>
+                  <select name="farm_size">
+                    <option value="">Select Size</option>
+                    {% for s in ['Less than 1 acre','1-5 acres','5-10 acres','10-50 acres','50+ acres'] %}
+                    <option {% if user['farm_size']==s %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="form-group"><label>Crop Types</label><input type="text" name="crop_types" value="{{ user['crop_types'] or '' }}" placeholder="Maize, Wheat..."></div>
+              </div>
+            </div>
+            <div class="form-card">
+              <h3 class="form-section-title"><i class="fas fa-lock"></i> Reset Password <span style="font-size:12px;font-weight:400;color:var(--text-muted);">(leave blank to keep current)</span></h3>
+              <div class="form-group"><label>New Password</label><input type="password" name="new_password" placeholder="Enter new password" minlength="6"></div>
+            </div>
+          </div>
+          <div class="post-form-sidebar">
+            <div class="form-card">
+              <h3 class="form-section-title"><i class="fas fa-shield-halved"></i> Account Control</h3>
+              <div class="form-group"><label>Role</label>
+                <select name="role">
+                  <option value="farmer" {% if user['role']=='farmer' %}selected{% endif %}>Farmer</option>
+                  <option value="admin" {% if user['role']=='admin' %}selected{% endif %}>Admin</option>
+                </select>
+              </div>
+              <div class="form-check-group">
+                <label class="checkbox-label-admin"><input type="checkbox" name="is_active" {% if user['is_active'] %}checked{% endif %}> <span>Account Active</span></label>
+              </div>
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid #dde8dd;">
+                <p style="font-size:12px;color:#5a7260;margin-bottom:8px;"><strong>Ban Status:</strong> {% if user['is_banned'] %}<span style="color:#c62828;">Banned — {{ user['ban_reason'] or 'No reason given' }}</span>{% else %}<span style="color:#2e7d32;">Not banned</span>{% endif %}</p>
+              </div>
+            </div>
+            <div class="form-card" style="background:#f9fbf9;">
+              <h4 style="font-size:13px;font-weight:700;margin-bottom:8px;">Account Info</h4>
+              <p style="font-size:12px;color:#5a7260;">Joined: {{ user['created_at'][:10] }}</p>
+              <p style="font-size:12px;color:#5a7260;">Last login: {{ user['last_login'][:10] if user['last_login'] else 'Never' }}</p>
+              <p style="font-size:12px;color:#5a7260;">Username: @{{ user['username'] }}</p>
+            </div>
+            <div class="form-submit-group">
+              <button type="submit" class="btn-admin-primary btn-full"><i class="fas fa-save"></i> Save Changes</button>
+              <a href="{{ url_for('admin_users') }}" class="btn-admin-outline" style="margin-top:8px;justify-content:center;"><i class="fas fa-times"></i> Cancel</a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));</script>
+{% endblock %}

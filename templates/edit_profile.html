@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile – FarmersPulse{% endblock %}
+{% block body_class %}farmer-body{% endblock %}
+{% block content %}
+<div class="fp-layout">
+  <aside class="fp-sidebar" id="sidebar">
+    <div class="sidebar-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('saved_posts') }}" class="nav-item"><i class="fas fa-bookmark"></i><span>Saved Posts</span></a>
+      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item"><i class="fas fa-user"></i><span>My Profile</span></a>
+      <a href="{{ url_for('edit_profile') }}" class="nav-item {% if request.endpoint=='edit_profile' %}active{% endif %}"><i class="fas fa-cog"></i><span>Settings</span></a>
+      <a href="{{ url_for('about') }}" class="nav-item {% if request.endpoint in ['about','feedback'] %}active{% endif %}"><i class="fas fa-circle-info"></i><span>About Us</span></a>
+    </nav>
+    <div class="sidebar-footer"><a href="{{ url_for('logout') }}" class="nav-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="fp-main">
+    <header class="fp-topnav">
+      <div class="topnav-left">
+        <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+        <a href="{{ url_for('profile', user_id=current_user.id) }}" class="back-link"><i class="fas fa-arrow-left"></i> Back to Profile</a>
+      </div>
+    </header>
+    <div class="fp-content">
+      <div class="feed-column settings-page">
+        <div class="settings-header">
+          <h2><i class="fas fa-cog"></i> Edit Profile & Settings</h2>
+        </div>
+        <form method="POST" action="{{ url_for('edit_profile') }}" enctype="multipart/form-data" class="settings-form">
+          <!-- Profile Picture -->
+          <div class="settings-card">
+            <h3 class="settings-section-title"><i class="fas fa-camera"></i> Profile Picture</h3>
+            <div class="avatar-upload-area">
+              <div class="avatar-preview" id="avatarPreview">
+                {% if user['profile_pic'] %}
+                  <img src="{{ url_for('static', filename='uploads/' + user['profile_pic']) }}" id="previewImg">
+                {% else %}
+                  <div class="avatar-preview-fallback">{{ user['username'][0].upper() }}</div>
+                {% endif %}
+              </div>
+              <div class="avatar-upload-info">
+                <label class="upload-label" for="profile_pic"><i class="fas fa-upload"></i> Choose Photo</label>
+                <input type="file" name="profile_pic" id="profile_pic" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
+                <input type="hidden" name="current_pic" value="{{ user['profile_pic'] or '' }}">
+                <p>JPG, PNG or GIF · Max 5MB</p>
+              </div>
+            </div>
+          </div>
+          <!-- Personal Info -->
+          <div class="settings-card">
+            <h3 class="settings-section-title"><i class="fas fa-id-card"></i> Personal Information</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Full Name</label><input type="text" name="full_name" value="{{ user['full_name'] or '' }}" placeholder="Your full name"></div>
+              <div class="form-group"><label>Username <span class="hint">(cannot change)</span></label><input type="text" value="{{ user['username'] }}" disabled></div>
+              <div class="form-group"><label>Email Address</label><input type="email" name="email" value="{{ user['email'] }}"></div>
+              <div class="form-group"><label>Phone Number</label><input type="text" name="phone" value="{{ user['phone'] or '' }}" placeholder="07XXXXXXXX"></div>
+            </div>
+            <div class="form-group form-group-full"><label>Bio</label><textarea name="bio" rows="3" placeholder="Tell other farmers about yourself...">{{ user['bio'] or '' }}</textarea></div>
+          </div>
+          <!-- Farm Info -->
+          <div class="settings-card">
+            <h3 class="settings-section-title"><i class="fas fa-tractor"></i> Farm Information</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>County</label>
+                <select name="county">
+                  <option value="">Select County</option>
+                  {% for c in ['Narok','Nakuru','Baringo','Trans Nzoia','Uasin Gishu','Nandi','Kisumu','Nyeri','Meru','Machakos','Kiambu',"Murang'a",'Kirinyaga','Embu','Other'] %}
+                  <option {% if user['county'] == c %}selected{% endif %}>{{ c }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Farm Size</label>
+                <select name="farm_size">
+                  <option value="">Select Size</option>
+                  {% for s in ['Less than 1 acre','1-5 acres','5-10 acres','10-50 acres','50+ acres'] %}
+                  <option {% if user['farm_size'] == s %}selected{% endif %}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group form-group-full"><label>Crop Types <span class="hint">(comma separated)</span></label><input type="text" name="crop_types" value="{{ user['crop_types'] or '' }}" placeholder="e.g. Maize, Beans, Wheat, Coffee"></div>
+            </div>
+          </div>
+          <!-- Password -->
+          <div class="settings-card">
+            <h3 class="settings-section-title"><i class="fas fa-lock"></i> Change Password <span class="hint">(leave blank to keep current)</span></h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Current Password</label><input type="password" name="current_password" placeholder="Current password"></div>
+              <div class="form-group"><label>New Password</label><input type="password" name="new_password" placeholder="New password (min 6 chars)" minlength="6"></div>
+            </div>
+          </div>
+          <div class="settings-submit">
+            <button type="submit" class="btn-primary-lg"><i class="fas fa-save"></i> Save Changes</button>
+            <a href="{{ url_for('profile', user_id=current_user.id) }}" class="btn-outline-lg">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function previewPhoto(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{document.getElementById('avatarPreview').innerHTML=`<img src="${e.target.result}" id="previewImg">`;};r.readAsDataURL(input.files[0]);}}
+document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active');});
+document.getElementById('sidebarClose').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+</script>
+{% endblock %}

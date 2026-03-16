@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Admin Account – FarmersPulse{% endblock %}
+{% block body_class %}admin-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  {% include '_admin_sidebar.html' %}
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
+      <div class="admin-topbar-title"><h1>Admin Account</h1><span>Manage your profile & admin team</span></div>
+    </header>
+    <div class="admin-content">
+      <div class="admin-account-grid">
+
+        <!-- Update My Profile -->
+        <div class="account-card">
+          <div class="account-card-header">
+            <h3><i class="fas fa-user-shield"></i> My Admin Profile</h3>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+            {% if me['profile_pic'] %}
+              <img src="{{ url_for('static', filename='uploads/' + me['profile_pic']) }}" class="profile-pic-preview" alt="">
+            {% else %}
+              <div class="profile-pic-placeholder">{{ me['username'][0].upper() }}</div>
+            {% endif %}
+            <div>
+              <strong style="font-size:16px;">{{ me['full_name'] or me['username'] }}</strong>
+              <p style="font-size:12px;color:#5a7260;">@{{ me['username'] }} · Administrator</p>
+              <p style="font-size:12px;color:#5a7260;">{{ me['email'] }}</p>
+            </div>
+          </div>
+          <form method="POST" action="{{ url_for('admin_account') }}" enctype="multipart/form-data">
+            <input type="hidden" name="action" value="update_self">
+            <div class="form-group"><label style="font-size:13px;font-weight:700;">Full Name</label><input type="text" name="full_name" value="{{ me['full_name'] or '' }}" style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+            <div class="form-group" style="margin-top:12px;"><label style="font-size:13px;font-weight:700;">Email</label><input type="email" name="email" value="{{ me['email'] }}" style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+            <div class="form-group" style="margin-top:12px;"><label style="font-size:13px;font-weight:700;">Phone</label><input type="text" name="phone" value="{{ me['phone'] or '' }}" placeholder="07XXXXXXXX" style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+            <div class="form-group" style="margin-top:12px;"><label style="font-size:13px;font-weight:700;">County</label>
+              <select name="county" style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;">
+                {% for c in ['Narok','Nakuru','Baringo','Trans Nzoia','Kisumu','Nyeri','Meru','Kiambu','Other'] %}
+                <option {% if me['county']==c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group" style="margin-top:12px;"><label style="font-size:13px;font-weight:700;">Profile Photo</label>
+              <input type="file" name="profile_pic" accept="image/*" style="margin-top:4px;font-size:13px;" onchange="previewAdminPic(this)">
+            </div>
+            <hr style="margin:16px 0;border-color:#eef4ee;">
+            <p style="font-size:13px;font-weight:700;margin-bottom:8px;">Change Password <span style="font-weight:400;color:#8faa90;">(leave blank to keep current)</span></p>
+            <div class="form-group"><label style="font-size:13px;font-weight:700;">Current Password</label><input type="password" name="current_password" placeholder="Current password" style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+            <div class="form-group" style="margin-top:10px;"><label style="font-size:13px;font-weight:700;">New Password</label><input type="password" name="new_password" placeholder="New password" minlength="6" style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+            <button type="submit" class="btn-admin-primary" style="margin-top:16px;width:100%;justify-content:center;"><i class="fas fa-save"></i> Save Profile</button>
+          </form>
+        </div>
+
+        <!-- Right column -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- Add Admin -->
+          <div class="account-card">
+            <div class="account-card-header">
+              <h3><i class="fas fa-user-plus"></i> Add New Admin</h3>
+            </div>
+            <form method="POST" action="{{ url_for('admin_account') }}">
+              <input type="hidden" name="action" value="add_admin">
+              <div class="form-group"><label style="font-size:13px;font-weight:700;">Full Name</label><input type="text" name="new_full_name" placeholder="Admin full name" style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+              <div class="form-group" style="margin-top:10px;"><label style="font-size:13px;font-weight:700;">Username <span style="color:#c62828;">*</span></label><input type="text" name="new_username" placeholder="admin_username" required style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+              <div class="form-group" style="margin-top:10px;"><label style="font-size:13px;font-weight:700;">Email <span style="color:#c62828;">*</span></label><input type="email" name="new_email" placeholder="admin@farmerspulse.com" required style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+              <div class="form-group" style="margin-top:10px;"><label style="font-size:13px;font-weight:700;">Password <span style="color:#c62828;">*</span></label><input type="password" name="new_password_admin" placeholder="Strong password" required minlength="6" style="width:100%;padding:9px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:14px;font-family:var(--font);outline:none;margin-top:4px;"></div>
+              <button type="submit" class="btn-admin-primary" style="margin-top:14px;width:100%;justify-content:center;"><i class="fas fa-user-plus"></i> Create Admin Account</button>
+            </form>
+          </div>
+
+          <!-- Existing Admins -->
+          <div class="account-card">
+            <div class="account-card-header">
+              <h3><i class="fas fa-users-gear"></i> Admin Team</h3>
+            </div>
+            <div class="admin-list">
+              {% for a in admins %}
+              <div class="admin-list-item">
+                <div class="admin-avatar">{{ a['username'][0].upper() }}</div>
+                <div class="admin-list-item-info">
+                  <strong>{{ a['full_name'] or a['username'] }}</strong>
+                  <span>@{{ a['username'] }} · {{ a['email'] }}</span>
+                  <span>Joined {{ a['created_at'][:10] }}</span>
+                </div>
+                <form method="POST" action="{{ url_for('delete_admin', aid=a['id']) }}" onsubmit="return confirm('Remove admin @{{ a['username'] }}? They will lose admin access.')">
+                  <button type="submit" class="tbl-btn tbl-delete" title="Remove Admin"><i class="fas fa-trash"></i></button>
+                </form>
+              </div>
+              {% else %}
+              <p style="font-size:13px;color:#8faa90;text-align:center;padding:16px;">No other admins yet.</p>
+              {% endfor %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function previewAdminPic(input){
+  if(input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{document.querySelector('.profile-pic-preview,.profile-pic-placeholder').outerHTML=`<img src="${e.target.result}" class="profile-pic-preview" alt="">`};
+    r.readAsDataURL(input.files[0]);
+  }
+}
+document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));
+</script>
+{% endblock %}

@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – FarmersPulse{% endblock %}
+{% block body_class %}farmer-body{% endblock %}
+{% block content %}
+<div class="fp-layout">
+  <!-- SIDEBAR -->
+  <aside class="fp-sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span>
+      <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('dashboard') }}" class="nav-item {% if not request.args.get('category') and request.endpoint=='dashboard' %}active{% endif %}"><i class="fas fa-home"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('dashboard', category='market') }}" class="nav-item {% if request.args.get('category')=='market' %}active{% endif %}"><i class="fas fa-chart-line"></i><span>Market Updates</span></a>
+      <a href="{{ url_for('dashboard', category='advisory') }}" class="nav-item {% if request.args.get('category')=='advisory' %}active{% endif %}"><i class="fas fa-leaf"></i><span>Advisories</span></a>
+      <a href="{{ url_for('dashboard', category='weather') }}" class="nav-item {% if request.args.get('category')=='weather' %}active{% endif %}"><i class="fas fa-cloud-sun"></i><span>Weather</span></a>
+      <a href="{{ url_for('dashboard', category='pest') }}" class="nav-item {% if request.args.get('category')=='pest' %}active{% endif %}"><i class="fas fa-bug"></i><span>Pest Alerts</span></a>
+      <a href="{{ url_for('saved_posts') }}" class="nav-item {% if request.endpoint=='saved_posts' %}active{% endif %}"><i class="fas fa-bookmark"></i><span>Saved Posts</span></a>
+      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item"><i class="fas fa-user"></i><span>My Profile</span></a>
+      <a href="{{ url_for('edit_profile') }}" class="nav-item {% if request.endpoint=='edit_profile' %}active{% endif %}"><i class="fas fa-cog"></i><span>Settings</span></a>
+      <a href="{{ url_for('about') }}" class="nav-item {% if request.endpoint in ['about','feedback'] %}active{% endif %}"><i class="fas fa-circle-info"></i><span>About Us</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="{{ url_for('logout') }}" class="nav-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="fp-main">
+    <!-- TOPNAV -->
+    <header class="fp-topnav">
+      <div class="topnav-left">
+        <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+        <form class="search-form" method="GET" action="{{ url_for('dashboard') }}">
+          <i class="fas fa-search"></i>
+          <input type="text" name="search" placeholder="Search advisories, alerts..." value="{{ search }}">
+        </form>
+      </div>
+      <div class="topnav-right">
+        <div class="notif-btn" id="notifBtn">
+          <i class="fas fa-bell"></i>
+          {% if unread_count > 0 %}<span class="notif-badge">{{ unread_count }}</span>{% endif %}
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-header"><span>Notifications</span><button onclick="markAllRead()" class="mark-read-btn">Mark all read</button></div>
+            <div class="notif-list">
+              {% for n in notifs %}
+              <a href="{{ n['link'] or '#' }}" class="notif-item {% if not n['is_read'] %}unread{% endif %}">
+                <span class="notif-icon"><i class="fas fa-{% if n['notif_type']=='like' %}thumbs-up{% elif n['notif_type']=='comment' %}comment{% elif n['notif_type']=='follow' %}user-plus{% else %}bell{% endif %}"></i></span>
+                <div><p>{{ n['content'] }}</p><small>{{ n['created_at'][:16] }}</small></div>
+              </a>
+              {% else %}
+              <div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <a href="{{ url_for('profile', user_id=current_user.id) }}" class="user-chip">
+          {% if current_user['profile_pic'] %}<img src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" alt="">{% else %}<div class="avatar-initials">{{ current_user['username'][0].upper() }}</div>{% endif %}
+          <span>{{ current_user['full_name'] or current_user['username'] }}</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="fp-content">
+      <!-- FEED -->
+      <div class="feed-column">
+        <!-- Welcome -->
+        <div class="welcome-card">
+          <div>
+            <h2>Welcome back, <span>{{ current_user['full_name'] or current_user['username'] }}</span> 👋</h2>
+            <p>Stay updated with the latest agricultural insights tailored for you.</p>
+            {% if current_user['county'] or current_user['crop_types'] %}
+            <div class="profile-tags">
+              {% if current_user['county'] %}<span class="tag"><i class="fas fa-map-marker-alt"></i> {{ current_user['county'] }}</span>{% endif %}
+              {% for crop in (current_user['crop_types'] or '').split(',') %}{% if crop.strip() %}<span class="tag tag-crop"><i class="fas fa-seedling"></i> {{ crop.strip() }}</span>{% endif %}{% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="welcome-icon"><i class="fas fa-tractor"></i></div>
+        </div>
+
+        <!-- Filters -->
+        <div class="category-filters">
+          {% if using_ai_feed %}
+          <span class="filter-btn active" style="background:linear-gradient(135deg,#1565c0,#42a5f5);border-color:transparent;cursor:default;"><i class="fas fa-robot"></i> AI Personalized</span>
+          {% endif %}
+          <a href="{{ url_for('dashboard') }}" class="filter-btn {% if not category %}active{% endif %}">All</a>
+          <a href="{{ url_for('dashboard', category='advisory') }}" class="filter-btn {% if category=='advisory' %}active{% endif %}"><i class="fas fa-leaf"></i> Advisory</a>
+          <a href="{{ url_for('dashboard', category='market') }}" class="filter-btn {% if category=='market' %}active{% endif %}"><i class="fas fa-chart-line"></i> Market</a>
+          <a href="{{ url_for('dashboard', category='weather') }}" class="filter-btn {% if category=='weather' %}active{% endif %}"><i class="fas fa-cloud-sun"></i> Weather</a>
+          <a href="{{ url_for('dashboard', category='pest') }}" class="filter-btn {% if category=='pest' %}active{% endif %}"><i class="fas fa-bug"></i> Pest Alert</a>
+          <a href="{{ url_for('dashboard', category='livestock') }}" class="filter-btn {% if category=='livestock' %}active{% endif %}"><i class="fas fa-horse"></i> Livestock</a>
+        </div>
+
+        <!-- Posts -->
+        {% for item in posts_data %}
+        {% set p = item.post %}
+        <article class="post-card {% if p['is_pinned'] %}post-pinned{% endif %}" data-post-id="{{ p['id'] }}">
+          {% if p['is_pinned'] %}<div class="pin-badge"><i class="fas fa-thumbtack"></i> Pinned</div>{% endif %}
+          {% if p['source'] == 'ai_model' %}<div class="ai-badge"><i class="fas fa-robot"></i> AI</div>{% endif %}
+          <div class="post-meta">
+            <div class="post-author">
+              <div class="avatar-sm">F</div>
+              <div><strong>FarmersPulse</strong><span>{{ p['created_at'][:16] }}</span></div>
+            </div>
+            <span class="post-category cat-{{ p['category'] or 'general' }}">{{ p['category'] or 'General' }}</span>
+          </div>
+          {% if p['image_url'] %}
+          <a href="{{ url_for('post_detail', post_id=p['id']) }}"><img src="{{ p['image_url'] }}" alt="{{ p['title'] }}" class="post-image" loading="lazy"></a>
+          {% endif %}
+          <div class="post-body">
+            <h3 class="post-title"><a href="{{ url_for('post_detail', post_id=p['id']) }}">{{ p['title'] }}</a></h3>
+            <div class="post-text">
+              <p class="short-text">{{ p['short_text'] }}</p>
+              {% if p['full_text'] %}
+              <p class="full-text" style="display:none;">{{ p['full_text'] }}</p>
+              <button class="read-more-btn" onclick="toggleReadMore(this)">Read more <i class="fas fa-chevron-down"></i></button>
+              {% endif %}
+            </div>
+            {% if p['tags'] %}
+            <div class="post-tags">{% for tag in p['tags'].split(',') %}{% if tag.strip() %}<span class="post-tag">#{{ tag.strip() }}</span>{% endif %}{% endfor %}</div>
+            {% endif %}
+          </div>
+          <div class="post-actions-bar">
+            <div class="post-actions-left">
+              <button class="action-btn like-btn {% if liked_map.get(p['id']) == true %}active{% endif %}" onclick="reactPost({{ p['id'] }}, true, this)">
+                <i class="fas fa-thumbs-up"></i><span class="like-count">{{ item.likes }}</span>
+              </button>
+              <button class="action-btn dislike-btn {% if liked_map.get(p['id']) == false %}active-dislike{% endif %}" onclick="reactPost({{ p['id'] }}, false, this)">
+                <i class="fas fa-thumbs-down"></i><span class="dislike-count">{{ item.dislikes }}</span>
+              </button>
+              <a href="{{ url_for('post_detail', post_id=p['id']) }}#comments" class="action-btn"><i class="fas fa-comment"></i><span>{{ item.comments }}</span></a>
+              <button class="action-btn" onclick="sharePost({{ p['id'] }}, '{{ p['title']|e }}')"><i class="fas fa-share-nodes"></i></button>
+            </div>
+            <button class="action-btn save-btn {% if p['id'] in saved_ids %}saved{% endif %}" onclick="savePost({{ p['id'] }}, this)">
+              <i class="fas fa-bookmark"></i>
+            </button>
+          </div>
+        </article>
+        {% else %}
+        <div class="empty-state"><i class="fas fa-newspaper"></i><h3>No posts found</h3><p>Check back soon for new farming updates.</p></div>
+        {% endfor %}
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="pagination">
+          {% if page > 1 %}<a href="{{ url_for('dashboard', page=page-1, category=category, search=search) }}" class="page-btn"><i class="fas fa-chevron-left"></i></a>{% endif %}
+          {% for p in range(1, total_pages+1) %}
+            {% if p == page %}<span class="page-btn active">{{ p }}</span>
+            {% elif p == 1 or p == total_pages or (p >= page-2 and p <= page+2) %}
+            <a href="{{ url_for('dashboard', page=p, category=category, search=search) }}" class="page-btn">{{ p }}</a>
+            {% elif p == page-3 or p == page+3 %}<span class="page-ellipsis">…</span>{% endif %}
+          {% endfor %}
+          {% if page < total_pages %}<a href="{{ url_for('dashboard', page=page+1, category=category, search=search) }}" class="page-btn"><i class="fas fa-chevron-right"></i></a>{% endif %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <aside class="right-panel">
+        <div class="profile-card-widget">
+          <div class="profile-card-cover"></div>
+          <div class="profile-card-info">
+            {% if current_user['profile_pic'] %}
+              <img src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" alt="" class="profile-avatar-lg">
+            {% else %}
+              <div class="profile-avatar-lg avatar-fallback">{{ current_user['username'][0].upper() }}</div>
+            {% endif %}
+            <h4>{{ current_user['full_name'] or current_user['username'] }}</h4>
+            <p>{{ current_user['crop_types'] or 'Farmer' }}</p>
+            {% if current_user['county'] %}<p class="county-tag"><i class="fas fa-map-marker-alt"></i> {{ current_user['county'] }}</p>{% endif %}
+            <a href="{{ url_for('edit_profile') }}" class="btn-outline-sm" style="margin-top:10px;">Edit Profile</a>
+          </div>
+        </div>
+        <div class="widget-card">
+          <h4 class="widget-title"><i class="fas fa-fire"></i> Browse by Category</h4>
+          <div class="trending-list">
+            <a href="{{ url_for('dashboard', category='advisory') }}" class="trend-item"><i class="fas fa-leaf"></i> Advisory</a>
+            <a href="{{ url_for('dashboard', category='market') }}" class="trend-item"><i class="fas fa-chart-line"></i> Market</a>
+            <a href="{{ url_for('dashboard', category='weather') }}" class="trend-item"><i class="fas fa-cloud-sun"></i> Weather</a>
+            <a href="{{ url_for('dashboard', category='pest') }}" class="trend-item"><i class="fas fa-bug"></i> Pest Alerts</a>
+            <a href="{{ url_for('dashboard', category='livestock') }}" class="trend-item"><i class="fas fa-horse"></i> Livestock</a>
+          </div>
+        </div>
+        <div class="widget-card">
+          <h4 class="widget-title"><i class="fas fa-info-circle"></i> About FarmersPulse</h4>
+          <p class="widget-text">Your AI-powered farming hub. Personalized advisories, market updates, and weather alerts for Kenyan farmers.</p>
+          <p class="widget-text" style="margin-top:8px;font-size:12px;color:var(--text-muted);">© FarmersPulse 2025 · Maasai Mara University</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="shareModal" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-header"><h3>Share Post</h3><button onclick="document.getElementById('shareModal').style.display='none'"><i class="fas fa-times"></i></button></div>
+    <div class="share-options">
+      <button onclick="copyShareLink()" class="share-option-btn"><i class="fas fa-copy"></i> Copy Link</button>
+      <a id="waShare" href="#" target="_blank" class="share-option-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a id="twShare" href="#" target="_blank" class="share-option-btn twitter"><i class="fab fa-x-twitter"></i> Twitter/X</a>
+    </div>
+    <input type="text" id="shareUrl" class="share-url-input" readonly>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Sidebar
+document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active');});
+document.getElementById('sidebarClose').addEventListener('click',closeSidebar);
+document.getElementById('sidebarOverlay').addEventListener('click',closeSidebar);
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');}
+
+// Notifications
+document.getElementById('notifBtn').addEventListener('click',function(e){e.stopPropagation();this.classList.toggle('open');});
+document.addEventListener('click',()=>document.getElementById('notifBtn').classList.remove('open'));
+
+function markAllRead(){
+  fetch('/notifications/read',{method:'POST'}).then(()=>{
+    document.querySelectorAll('.notif-item.unread').forEach(n=>n.classList.remove('unread'));
+    const b=document.querySelector('.notif-badge');if(b)b.remove();
+  });
+}
+
+function reactPost(postId,isLike,btn){
+  fetch(`/like/${postId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_like:isLike})})
+  .then(r=>r.json()).then(d=>{
+    const card=btn.closest('.post-card');
+    card.querySelector('.like-count').textContent=d.likes;
+    card.querySelector('.dislike-count').textContent=d.dislikes;
+    card.querySelectorAll('.like-btn,.dislike-btn').forEach(b=>{b.classList.remove('active','active-dislike');});
+    if(isLike)btn.classList.toggle('active');else btn.classList.toggle('active-dislike');
+  });
+}
+
+function savePost(postId,btn){
+  fetch(`/save/${postId}`,{method:'POST'}).then(r=>r.json()).then(d=>{btn.classList.toggle('saved',d.saved);});
+}
+
+function toggleReadMore(btn){
+  const body=btn.closest('.post-text');
+  const short=body.querySelector('.short-text');const full=body.querySelector('.full-text');
+  const exp=full.style.display!=='none';
+  full.style.display=exp?'none':'block';short.style.display=exp?'block':'none';
+  btn.innerHTML=exp?'Read more <i class="fas fa-chevron-down"></i>':'Read less <i class="fas fa-chevron-up"></i>';
+}
+
+let curShareUrl='';
+function sharePost(postId,title){
+  fetch(`/share/${postId}`).then(r=>r.json()).then(d=>{
+    curShareUrl=d.url;
+    document.getElementById('shareUrl').value=d.url;
+    document.getElementById('waShare').href=`https://wa.me/?text=${encodeURIComponent(title+' '+d.url)}`;
+    document.getElementById('twShare').href=`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(d.url)}`;
+    document.getElementById('shareModal').style.display='flex';
+  });
+}
+function copyShareLink(){navigator.clipboard.writeText(curShareUrl);showToast('Link copied!','success');}
+</script>
+{% endblock %}

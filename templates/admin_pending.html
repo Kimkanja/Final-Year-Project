@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}AI Pending Queue – FarmersPulse Admin{% endblock %}
+{% block body_class %}admin-body{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block content %}
+<div class="admin-layout">
+  {% include '_admin_sidebar.html' %}
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
+      <div class="admin-topbar-title"><h1><i class="fas fa-robot"></i> AI Pending Queue</h1><span>{{ posts|length }} posts awaiting review</span></div>
+    </header>
+    <div class="admin-content">
+      {% if posts %}
+      <div class="pending-grid">
+        {% for p in posts %}
+        <div class="pending-card" id="pending-{{ p['id'] }}">
+          <div class="pending-card-header">
+            <span class="source-badge source-ai_model"><i class="fas fa-robot"></i> AI Generated</span>
+            <span class="cat-badge cat-{{ p['category'] }}">{{ p['category'] or 'advisory' }}</span>
+            <small>{{ p['created_at'][:16] }}</small>
+          </div>
+          {% if p['image_url'] %}<img src="{{ p['image_url'] }}" alt="{{ p['title'] }}" class="pending-img" onerror="this.style.display='none'">{% endif %}
+          <div class="pending-body">
+            <h3>{{ p['title'] }}</h3>
+            <p class="pending-short">{{ p['short_text'] }}</p>
+            {% if p['full_text'] %}
+            <div class="pending-full" style="display:none;">{{ p['full_text'] }}</div>
+            <button class="toggle-full-btn" onclick="this.previousElementSibling.style.display=this.previousElementSibling.style.display==='none'?'block':'none';this.textContent=this.textContent.includes('more')?'Show less ▲':'Show more ▼'">Show more ▼</button>
+            {% endif %}
+            {% if p['tags'] %}<div class="pending-tags">{% for t in p['tags'].split(',') %}{% if t.strip() %}<span class="post-tag">#{{ t.strip() }}</span>{% endif %}{% endfor %}</div>{% endif %}
+            {% if p['target_counties'] or p['target_crops'] %}
+            <div class="pending-meta">
+              {% if p['target_crops'] %}<span><i class="fas fa-seedling"></i> {{ p['target_crops'] }}</span>{% endif %}
+              {% if p['target_counties'] %}<span><i class="fas fa-map-marker-alt"></i> {{ p['target_counties'] }}</span>{% endif %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="pending-actions">
+            <button class="btn-approve" onclick="approvePost({{ p['id'] }})"><i class="fas fa-check"></i> Approve & Publish</button>
+            <a href="{{ url_for('admin_edit_post', pid=p['id']) }}" class="btn-edit-pending"><i class="fas fa-edit"></i> Edit First</a>
+            <form method="POST" action="{{ url_for('admin_delete_post', pid=p['id']) }}" onsubmit="return confirm('Reject and delete this post?')" style="display:inline;">
+              <button type="submit" class="btn-reject"><i class="fas fa-times"></i> Reject</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state"><i class="fas fa-robot"></i><h3>No pending AI posts</h3><p>Your AI model hasn't submitted any posts yet, or all have been reviewed.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function approvePost(id){
+  fetch(`/admin/posts/approve/${id}`,{method:'POST'}).then(r=>r.json()).then(d=>{
+    if(d.success){const card=document.getElementById(`pending-${id}`);card.style.opacity='0';card.style.transform='scale(0.95)';card.style.transition='all .3s';setTimeout(()=>{card.remove();showToast('Post published!','success');},300);}
+  });
+}
+document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));
+</script>
+{% endblock %}
