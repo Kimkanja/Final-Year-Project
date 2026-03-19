@@ -208,7 +208,7 @@ button {
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, .06);
+  background: var(--orange);
   color: #fff;
 }
 
@@ -2528,4 +2528,17 @@ position: absolute;
     font-size: 22px;
   }
 
+}
+
+.team-avatar {
+  width: 50px;          /* adjust size if needed */
+  height: 50px;
+  border-radius: 50%;   /* makes it circular */
+  overflow: hidden;     /* hides extra parts of image */
+}
+
+.team-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;    /* keeps image nicely cropped */
 }
