@@ -1,14 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Manage Users – FarmersPulse Admin{% endblock %}
+{% block title %}Manage Users | FarmersPulse Admin{% endblock %}
 {% block body_class %}admin-body{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
 {% block content %}
 <div class="admin-layout">
   {% include '_admin_sidebar.html' %}
   <div class="admin-main">
     <header class="admin-topbar">
       <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
-      <div class="admin-topbar-title"><h1>Manage Users</h1><span>{{ total }} total farmers</span></div>
+      <div class="admin-topbar-title">
+        <h1>Manage Users</h1><span>{{ total }} total farmers</span>
+      </div>
       <!-- Centered, wider search -->
       <div class="admin-topbar-search">
         <form method="GET" action="{{ url_for('admin_users') }}" class="admin-search-bar">
@@ -18,8 +21,10 @@
         </form>
       </div>
       <div class="admin-topbar-right">
-        <a href="{{ url_for('export_report', type='users', format='csv') }}" class="btn-admin-outline"><i class="fas fa-download"></i> CSV</a>
-        <a href="{{ url_for('export_report', type='users', format='json') }}" class="btn-admin-outline"><i class="fas fa-code"></i> JSON</a>
+        <a href="{{ url_for('export_report', type='users', format='csv') }}" class="btn-admin-outline"><i
+            class="fas fa-download"></i> CSV</a>
+        <a href="{{ url_for('export_report', type='users', format='json') }}" class="btn-admin-outline"><i
+            class="fas fa-code"></i> JSON</a>
       </div>
     </header>
     <div class="admin-content">
@@ -27,12 +32,28 @@
         <div class="table-scroll">
           <table class="admin-table">
             <thead>
-              <tr><th>User</th><th>Email</th><th>County</th><th>Crops</th><th>Farm Size</th><th>Joined</th><th>Last Login</th><th>Status</th><th>Actions</th></tr>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>County</th>
+                <th>Crops</th>
+                <th>Farm Size</th>
+                <th>Joined</th>
+                <th>Last Login</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody>
               {% for u in users %}
               <tr id="user-row-{{ u['id'] }}">
-                <td><div class="user-cell"><div class="avatar-sm-tbl">{{ u['username'][0].upper() }}</div><div><strong>{{ u['full_name'] or u['username'] }}</strong><br><small>@{{ u['username'] }}</small></div></div></td>
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar-sm-tbl">{{ u['username'][0].upper() }}</div>
+                    <div><strong>{{ u['full_name'] or u['username'] }}</strong><br><small>@{{ u['username'] }}</small>
+                    </div>
+                  </div>
+                </td>
                 <td>{{ u['email'] }}</td>
                 <td>{{ u['county'] or '—' }}</td>
                 <td><small>{{ u['crop_types'] or '—' }}</small></td>
@@ -41,39 +62,52 @@
                 <td>{{ u['last_login'][:10] if u['last_login'] else 'Never' }}</td>
                 <td>
                   {% if u['is_banned'] %}
-                    <span class="banned-badge">Banned</span>
+                  <span class="banned-badge">Banned</span>
                   {% else %}
-                    <span class="status-badge {% if u['is_active'] %}active{% else %}inactive{% endif %}" id="status-{{ u['id'] }}">{{ 'Active' if u['is_active'] else 'Inactive' }}</span>
+                  <span class="status-badge {% if u['is_active'] %}active{% else %}inactive{% endif %}"
+                    id="status-{{ u['id'] }}">{{ 'Active' if u['is_active'] else 'Inactive' }}</span>
                   {% endif %}
                 </td>
                 <td>
                   <div class="action-btns">
-                    <a href="{{ url_for('admin_edit_user', uid=u['id']) }}" class="tbl-btn tbl-edit" title="Edit User"><i class="fas fa-edit"></i></a>
-                    <button class="tbl-btn tbl-toggle" onclick="toggleUser({{ u['id'] }})" title="{{ 'Deactivate' if u['is_active'] else 'Activate' }}"><i class="fas fa-{% if u['is_active'] %}ban{% else %}check{% endif %}"></i></button>
-                    <button class="tbl-btn tbl-ban" onclick="openBanModal({{ u['id'] }}, '{{ u['username'] }}', {{ u['is_banned'] }})" title="{{ 'Unban' if u['is_banned'] else 'Ban' }} User" id="ban-btn-{{ u['id'] }}">
+                    <a href="{{ url_for('admin_edit_user', uid=u['id']) }}" class="tbl-btn tbl-edit"
+                      title="Edit User"><i class="fas fa-edit"></i></a>
+                    <button class="tbl-btn tbl-toggle" onclick="toggleUser({{ u['id'] }})"
+                      title="{{ 'Deactivate' if u['is_active'] else 'Activate' }}"><i
+                        class="fas fa-{% if u['is_active'] %}ban{% else %}check{% endif %}"></i></button>
+                    <button class="tbl-btn tbl-ban"
+                      onclick="openBanModal({{ u['id'] }}, '{{ u['username'] }}', {{ u['is_banned'] }})"
+                      title="{{ 'Unban' if u['is_banned'] else 'Ban' }} User" id="ban-btn-{{ u['id'] }}">
                       <i class="fas fa-{% if u['is_banned'] %}unlock{% else %}lock{% endif %}"></i>
                     </button>
-                    <form method="POST" action="{{ url_for('delete_user', uid=u['id']) }}" style="display:inline;" onsubmit="return confirm('Permanently delete {{ u['username'] }} and all their data?')">
-                      <button type="submit" class="tbl-btn tbl-delete" title="Delete User"><i class="fas fa-trash"></i></button>
+                    <form method="POST" action="{{ url_for('delete_user', uid=u['id']) }}" style="display:inline;"
+                      onsubmit="return confirm('Permanently delete {{ u['username'] }} and all their data?')">
+                      <button type="submit" class="tbl-btn tbl-delete" title="Delete User"><i
+                          class="fas fa-trash"></i></button>
                     </form>
                   </div>
                 </td>
               </tr>
               {% else %}
-              <tr><td colspan="9" class="empty-td">No users found.</td></tr>
+              <tr>
+                <td colspan="9" class="empty-td">No users found.</td>
+              </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
         {% if total_pages > 1 %}
         <div class="pagination" style="padding:12px 20px;">
-          {% if page > 1 %}<a href="{{ url_for('admin_users', page=page-1, search=search) }}" class="page-btn"><i class="fas fa-chevron-left"></i></a>{% endif %}
+          {% if page > 1 %}<a href="{{ url_for('admin_users', page=page-1, search=search) }}" class="page-btn"><i
+              class="fas fa-chevron-left"></i></a>{% endif %}
           {% for p in range(1, total_pages+1) %}
-            {% if p == page %}<span class="page-btn active">{{ p }}</span>
-            {% elif p == 1 or p == total_pages or (p >= page-2 and p <= page+2) %}<a href="{{ url_for('admin_users', page=p, search=search) }}" class="page-btn">{{ p }}</a>
+          {% if p == page %}<span class="page-btn active">{{ p }}</span>
+          {% elif p == 1 or p == total_pages or (p >= page-2 and p <= page+2) %}<a
+            href="{{ url_for('admin_users', page=p, search=search) }}" class="page-btn">{{ p }}</a>
             {% elif p == page-3 or p == page+3 %}<span class="page-ellipsis">…</span>{% endif %}
-          {% endfor %}
-          {% if page < total_pages %}<a href="{{ url_for('admin_users', page=page+1, search=search) }}" class="page-btn"><i class="fas fa-chevron-right"></i></a>{% endif %}
+            {% endfor %}
+            {% if page < total_pages %}<a href="{{ url_for('admin_users', page=page+1, search=search) }}"
+              class="page-btn"><i class="fas fa-chevron-right"></i></a>{% endif %}
         </div>
         {% endif %}
       </div>
@@ -96,34 +130,34 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-function toggleUser(id){
-  fetch(`/admin/users/toggle/${id}`,{method:'POST'}).then(r=>r.json()).then(d=>{
-    const badge=document.getElementById(`status-${id}`);
-    if(badge){badge.className=`status-badge ${d.active?'active':'inactive'}`;badge.textContent=d.active?'Active':'Inactive';}
-  });
-}
+  function toggleUser(id) {
+    fetch(`/admin/users/toggle/${id}`, { method: 'POST' }).then(r => r.json()).then(d => {
+      const badge = document.getElementById(`status-${id}`);
+      if (badge) { badge.className = `status-badge ${d.active ? 'active' : 'inactive'}`; badge.textContent = d.active ? 'Active' : 'Inactive'; }
+    });
+  }
 
-let currentBanUserId=null,currentlyBanned=false;
-function openBanModal(uid,username,isBanned){
-  currentBanUserId=uid;currentlyBanned=!!isBanned;
-  document.getElementById('banModalTitle').textContent=isBanned?`Unban @${username}`:`Ban @${username}`;
-  document.getElementById('banModalDesc').textContent=isBanned?'This will restore the user\'s access.':'This will prevent the user from logging in.';
-  document.getElementById('banReason').style.display=isBanned?'none':'block';
-  document.getElementById('banConfirmBtn').textContent=isBanned?'Confirm Unban':'Confirm Ban';
-  document.getElementById('banConfirmBtn').style.background=isBanned?'#2e7d32':'#c62828';
-  document.getElementById('banModal').style.display='flex';
-}
-function closeBanModal(){document.getElementById('banModal').style.display='none';currentBanUserId=null;}
-document.getElementById('banConfirmBtn').addEventListener('click',()=>{
-  if(!currentBanUserId)return;
-  const reason=document.getElementById('banReason').value||'Policy violation';
-  fetch(`/admin/users/ban/${currentBanUserId}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reason})})
-  .then(r=>r.json()).then(d=>{
-    closeBanModal();
-    showToast(d.banned?'User banned.':'User unbanned.', d.banned?'error':'success');
-    setTimeout(()=>window.location.reload(),800);
+  let currentBanUserId = null, currentlyBanned = false;
+  function openBanModal(uid, username, isBanned) {
+    currentBanUserId = uid; currentlyBanned = !!isBanned;
+    document.getElementById('banModalTitle').textContent = isBanned ? `Unban @${username}` : `Ban @${username}`;
+    document.getElementById('banModalDesc').textContent = isBanned ? 'This will restore the user\'s access.' : 'This will prevent the user from logging in.';
+    document.getElementById('banReason').style.display = isBanned ? 'none' : 'block';
+    document.getElementById('banConfirmBtn').textContent = isBanned ? 'Confirm Unban' : 'Confirm Ban';
+    document.getElementById('banConfirmBtn').style.background = isBanned ? '#2e7d32' : '#c62828';
+    document.getElementById('banModal').style.display = 'flex';
+  }
+  function closeBanModal() { document.getElementById('banModal').style.display = 'none'; currentBanUserId = null; }
+  document.getElementById('banConfirmBtn').addEventListener('click', () => {
+    if (!currentBanUserId) return;
+    const reason = document.getElementById('banReason').value || 'Policy violation';
+    fetch(`/admin/users/ban/${currentBanUserId}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reason }) })
+      .then(r => r.json()).then(d => {
+        closeBanModal();
+        showToast(d.banned ? 'User banned.' : 'User unbanned.', d.banned ? 'error' : 'success');
+        setTimeout(() => window.location.reload(), 800);
+      });
   });
-});
-document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));
+  document.getElementById('adminHamburger').addEventListener('click', () => document.getElementById('adminSidebar').classList.toggle('open'));
 </script>
 {% endblock %}

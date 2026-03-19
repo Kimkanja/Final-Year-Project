@@ -5,22 +5,38 @@
   </div>
   <nav class="admin-nav">
     <div class="nav-section-label">Overview</div>
-    <a href="{{ url_for('admin_dashboard') }}" class="admin-nav-item {% if request.endpoint=='admin_dashboard' %}active{% endif %}"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a>
+    <a href="{{ url_for('admin_dashboard') }}"
+      class="admin-nav-item {% if request.endpoint=='admin_dashboard' %}active{% endif %}"><i
+        class="fas fa-chart-pie"></i><span>Dashboard</span></a>
     <div class="nav-section-label">Content</div>
-    <a href="{{ url_for('admin_posts') }}" class="admin-nav-item {% if request.endpoint in ['admin_posts','admin_edit_post','admin_create_post'] %}active{% endif %}"><i class="fas fa-newspaper"></i><span>Posts</span></a>
-    <a href="{{ url_for('admin_create_post') }}" class="admin-nav-item {% if request.endpoint=='admin_create_post' %}active{% endif %}"><i class="fas fa-plus-circle"></i><span>New Post</span></a>
-    <a href="{{ url_for('admin_pending_posts') }}" class="admin-nav-item {% if request.endpoint=='admin_pending_posts' %}active{% endif %}">
-      <i class="fas fa-robot"></i><span>AI Queue {% if pending_ai_count > 0 %}<span class="nav-badge">{{ pending_ai_count }}</span>{% endif %}</span>
+    <a href="{{ url_for('admin_posts') }}"
+      class="admin-nav-item {% if request.endpoint in ['admin_posts','admin_edit_post','admin_create_post'] %}active{% endif %}"><i
+        class="fas fa-newspaper"></i><span>Posts</span></a>
+    <a href="{{ url_for('admin_create_post') }}"
+      class="admin-nav-item {% if request.endpoint=='admin_create_post' %}active{% endif %}"><i
+        class="fas fa-plus-circle"></i><span>New Post</span></a>
+    <a href="{{ url_for('admin_pending_posts') }}"
+      class="admin-nav-item {% if request.endpoint=='admin_pending_posts' %}active{% endif %}">
+      <i class="fas fa-robot"></i><span>AI Queue {% if pending_ai_count > 0 %}<span class="nav-badge">{{
+          pending_ai_count }}</span>{% endif %}</span>
     </a>
     <div class="nav-section-label">Users</div>
-    <a href="{{ url_for('admin_users') }}" class="admin-nav-item {% if request.endpoint in ['admin_users','admin_edit_user'] %}active{% endif %}"><i class="fas fa-users"></i><span>Manage Users</span></a>
+    <a href="{{ url_for('admin_users') }}"
+      class="admin-nav-item {% if request.endpoint in ['admin_users','admin_edit_user'] %}active{% endif %}"><i
+        class="fas fa-users"></i><span>Manage Users</span></a>
     <div class="nav-section-label">Analytics</div>
-    <a href="{{ url_for('admin_reports') }}" class="admin-nav-item {% if request.endpoint=='admin_reports' %}active{% endif %}"><i class="fas fa-file-chart-column"></i><span>Reports</span></a>
-    <a href="{{ url_for('admin_feedback') }}" class="admin-nav-item {% if request.endpoint=='admin_feedback' %}active{% endif %}">
-      <i class="fas fa-envelope-open-text"></i><span>Feedback {% if unread_feedback > 0 %}<span class="nav-badge">{{ unread_feedback }}</span>{% endif %}</span>
+    <a href="{{ url_for('admin_reports') }}"
+      class="admin-nav-item {% if request.endpoint=='admin_reports' %}active{% endif %}"><i
+        class="fas fa-file-chart-column"></i><span>Reports</span></a>
+    <a href="{{ url_for('admin_feedback') }}"
+      class="admin-nav-item {% if request.endpoint=='admin_feedback' %}active{% endif %}">
+      <i class="fas fa-envelope-open-text"></i><span>Feedback {% if unread_feedback > 0 %}<span class="nav-badge">{{
+          unread_feedback }}</span>{% endif %}</span>
     </a>
     <div class="nav-section-label">Account</div>
-    <a href="{{ url_for('admin_account') }}" class="admin-nav-item {% if request.endpoint=='admin_account' %}active{% endif %}"><i class="fas fa-user-shield"></i><span>Admin Account</span></a>
+    <a href="{{ url_for('admin_account') }}"
+      class="admin-nav-item {% if request.endpoint=='admin_account' %}active{% endif %}"><i
+        class="fas fa-user-shield"></i><span>Admin Account</span></a>
     <a href="{{ url_for('dashboard') }}" class="admin-nav-item"><i class="fas fa-eye"></i><span>View Site</span></a>
   </nav>
   <div class="admin-sidebar-footer">

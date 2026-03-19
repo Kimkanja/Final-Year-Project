@@ -1,32 +1,49 @@
 {% extends "base.html" %}
-{% block title %}{{ 'Edit' if post else 'Create' }} Post – FarmersPulse Admin{% endblock %}
+{% block title %}{{ 'Edit' if post else 'Create' }} Post | FarmersPulse Admin{% endblock %}
 {% block body_class %}admin-body{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
 {% block content %}
 <div class="admin-layout">
   {% include '_admin_sidebar.html' %}
   <div class="admin-main">
     <header class="admin-topbar">
       <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
-      <div class="admin-topbar-title"><h1>{{ 'Edit Post' if post else 'Create New Post' }}</h1></div>
-      <div class="admin-topbar-right"><a href="{{ url_for('admin_posts') }}" class="btn-admin-outline"><i class="fas fa-arrow-left"></i> Back</a></div>
+      <div class="admin-topbar-title">
+        <h1>{{ 'Edit Post' if post else 'Create New Post' }}</h1>
+      </div>
+      <div class="admin-topbar-right"><a href="{{ url_for('admin_posts') }}" class="btn-admin-outline"><i
+            class="fas fa-arrow-left"></i> Back</a></div>
     </header>
     <div class="admin-content">
       <form method="POST" enctype="multipart/form-data">
         <div class="post-form-grid">
           <div class="post-form-main">
             <div class="form-card">
-              <div class="form-group"><label>Post Title <span class="req">*</span></label><input type="text" name="title" value="{{ post['title'] if post else '' }}" placeholder="Enter a clear, descriptive title" required></div>
-              <div class="form-group"><label>Short Text <span class="req">*</span> <span class="hint">(shown in feed preview)</span></label><textarea name="short_text" rows="3" placeholder="Brief summary shown in the feed..." required>{{ post['short_text'] if post else '' }}</textarea></div>
-              <div class="form-group"><label>Full Text <span class="hint">(expanded detail — AI model's full description goes here)</span></label><textarea name="full_text" rows="8" placeholder="Full article content shown when user clicks 'Read more'...">{{ post['full_text'] if post else '' }}</textarea></div>
+              <div class="form-group"><label>Post Title <span class="req">*</span></label><input type="text"
+                  name="title" value="{{ post['title'] if post else '' }}"
+                  placeholder="Enter a clear, descriptive title" required></div>
+              <div class="form-group"><label>Short Text <span class="req">*</span> <span class="hint">(shown in feed
+                    preview)</span></label><textarea name="short_text" rows="3"
+                  placeholder="Brief summary shown in the feed..."
+                  required>{{ post['short_text'] if post else '' }}</textarea></div>
+              <div class="form-group"><label>Full Text <span class="hint">(expanded detail — AI model's full description
+                    goes here)</span></label><textarea name="full_text" rows="8"
+                  placeholder="Full article content shown when user clicks 'Read more'...">{{ post['full_text'] if post else '' }}</textarea>
+              </div>
             </div>
             <div class="form-card">
               <h3 class="form-section-title"><i class="fas fa-image"></i> Post Image</h3>
-              <div class="form-group"><label>Image URL <span class="hint">(AI model or external source)</span></label><input type="text" name="image_url" value="{{ post['image_url'] if post else '' }}" placeholder="https://..." id="imageUrlInput"></div>
+              <div class="form-group"><label>Image URL <span class="hint">(AI model or external
+                    source)</span></label><input type="text" name="image_url"
+                  value="{{ post['image_url'] if post else '' }}" placeholder="https://..." id="imageUrlInput"></div>
               <div class="form-divider">OR</div>
-              <div class="form-group"><label>Upload Image File</label><input type="file" name="image_file" accept="image/*" onchange="previewPostImg(this)"></div>
-              <div id="imgPreviewBox" style="{% if post and post['image_url'] %}display:block{% else %}display:none{% endif %};">
-                <img id="imgPreview" src="{{ post['image_url'] if post else '' }}" style="max-width:100%;border-radius:8px;margin-top:10px;max-height:300px;object-fit:cover;">
+              <div class="form-group"><label>Upload Image File</label><input type="file" name="image_file"
+                  accept="image/*" onchange="previewPostImg(this)"></div>
+              <div id="imgPreviewBox"
+                style="{% if post and post['image_url'] %}display:block{% else %}display:none{% endif %};">
+                <img id="imgPreview" src="{{ post['image_url'] if post else '' }}"
+                  style="max-width:100%;border-radius:8px;margin-top:10px;max-height:300px;object-fit:cover;">
               </div>
             </div>
           </div>
@@ -36,26 +53,37 @@
               <div class="form-group"><label>Category</label>
                 <select name="category">
                   {% for c in ['advisory','market','weather','pest','livestock'] %}
-                  <option value="{{ c }}" {% if post and post['category']==c %}selected{% elif not post and c=='advisory' %}selected{% endif %}>{{ c.title() }}</option>
+                  <option value="{{ c }}" {% if post and post['category']==c %}selected{% elif not post and
+                    c=='advisory' %}selected{% endif %}>{{ c.title() }}</option>
                   {% endfor %}
                 </select>
               </div>
-              <div class="form-group"><label>Tags <span class="hint">(comma separated)</span></label><input type="text" name="tags" value="{{ post['tags'] if post else '' }}" placeholder="maize, fertilizer, advisory"></div>
-              <div class="form-group"><label>Target Crops</label><input type="text" name="target_crops" value="{{ post['target_crops'] if post else '' }}" placeholder="Maize, Wheat, Beans"></div>
-              <div class="form-group"><label>Target Counties</label><input type="text" name="target_counties" value="{{ post['target_counties'] if post else '' }}" placeholder="Narok, Baringo, Trans Nzoia"></div>
+              <div class="form-group"><label>Tags <span class="hint">(comma separated)</span></label><input type="text"
+                  name="tags" value="{{ post['tags'] if post else '' }}" placeholder="maize, fertilizer, advisory">
+              </div>
+              <div class="form-group"><label>Target Crops</label><input type="text" name="target_crops"
+                  value="{{ post['target_crops'] if post else '' }}" placeholder="Maize, Wheat, Beans"></div>
+              <div class="form-group"><label>Target Counties</label><input type="text" name="target_counties"
+                  value="{{ post['target_counties'] if post else '' }}" placeholder="Narok, Baringo, Trans Nzoia"></div>
               <div class="form-check-group">
-                <label class="checkbox-label-admin"><input type="checkbox" name="is_published" {% if not post or post['is_published'] %}checked{% endif %}> <span>Published</span></label>
-                <label class="checkbox-label-admin"><input type="checkbox" name="is_pinned" {% if post and post['is_pinned'] %}checked{% endif %}> <span>Pin to top of feed</span></label>
+                <label class="checkbox-label-admin"><input type="checkbox" name="is_published" {% if not post or
+                    post['is_published'] %}checked{% endif %}> <span>Published</span></label>
+                <label class="checkbox-label-admin"><input type="checkbox" name="is_pinned" {% if post and
+                    post['is_pinned'] %}checked{% endif %}> <span>Pin to top of feed</span></label>
               </div>
             </div>
             <div class="form-card ai-hint-card">
               <h4><i class="fas fa-robot"></i> AI Model Integration</h4>
-              <p>Your Colab model fills <code>title</code>, <code>short_text</code>, <code>full_text</code>, <code>image_url</code>, <code>category</code>, <code>tags</code>, <code>target_crops</code>, and <code>target_counties</code> automatically via the API.</p>
+              <p>Your Colab model fills <code>title</code>, <code>short_text</code>, <code>full_text</code>,
+                <code>image_url</code>, <code>category</code>, <code>tags</code>, <code>target_crops</code>, and
+                <code>target_counties</code> automatically via the API.</p>
             </div>
             <div class="form-submit-group">
-              <button type="submit" class="btn-admin-primary btn-full"><i class="fas fa-save"></i> {{ 'Update Post' if post else 'Create Post' }}</button>
+              <button type="submit" class="btn-admin-primary btn-full"><i class="fas fa-save"></i> {{ 'Update Post' if
+                post else 'Create Post' }}</button>
               {% if post %}
-              <form method="POST" action="{{ url_for('admin_delete_post', pid=post['id']) }}" onsubmit="return confirm('Permanently delete this post?')" style="margin-top:0;">
+              <form method="POST" action="{{ url_for('admin_delete_post', pid=post['id']) }}"
+                onsubmit="return confirm('Permanently delete this post?')" style="margin-top:0;">
                 <button type="submit" class="btn-danger-full"><i class="fas fa-trash"></i> Delete Post</button>
               </form>
               {% endif %}
@@ -69,8 +97,8 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-function previewPostImg(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{document.getElementById('imgPreview').src=e.target.result;document.getElementById('imgPreviewBox').style.display='block';};r.readAsDataURL(input.files[0]);}}
-document.getElementById('imageUrlInput').addEventListener('input',function(){if(this.value){document.getElementById('imgPreview').src=this.value;document.getElementById('imgPreviewBox').style.display='block';}});
-document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));
+  function previewPostImg(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = e => { document.getElementById('imgPreview').src = e.target.result; document.getElementById('imgPreviewBox').style.display = 'block'; }; r.readAsDataURL(input.files[0]); } }
+  document.getElementById('imageUrlInput').addEventListener('input', function () { if (this.value) { document.getElementById('imgPreview').src = this.value; document.getElementById('imgPreviewBox').style.display = 'block'; } });
+  document.getElementById('adminHamburger').addEventListener('click', () => document.getElementById('adminSidebar').classList.toggle('open'));
 </script>
 {% endblock %}

@@ -1,18 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Saved Posts – FarmersPulse{% endblock %}
+{% block title %}Saved Posts | FarmersPulse{% endblock %}
 {% block body_class %}farmer-body{% endblock %}
 {% block content %}
 <div class="fp-layout">
   <aside class="fp-sidebar" id="sidebar">
-    <div class="sidebar-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+    <div class="sidebar-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span><button
+        class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
     <nav class="sidebar-nav">
       <a href="{{ url_for('dashboard') }}" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
-      <a href="{{ url_for('saved_posts') }}" class="nav-item active"><i class="fas fa-bookmark"></i><span>Saved Posts</span></a>
-      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item"><i class="fas fa-user"></i><span>My Profile</span></a>
-      <a href="{{ url_for('edit_profile') }}" class="nav-item {% if request.endpoint=='edit_profile' %}active{% endif %}"><i class="fas fa-cog"></i><span>Settings</span></a>
-      <a href="{{ url_for('about') }}" class="nav-item {% if request.endpoint in ['about','feedback'] %}active{% endif %}"><i class="fas fa-circle-info"></i><span>About Us</span></a>
+      <a href="{{ url_for('saved_posts') }}" class="nav-item active"><i class="fas fa-bookmark"></i><span>Saved
+          Posts</span></a>
+      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item"><i class="fas fa-user"></i><span>My
+          Profile</span></a>
+      <a href="{{ url_for('edit_profile') }}"
+        class="nav-item {% if request.endpoint=='edit_profile' %}active{% endif %}"><i
+          class="fas fa-cog"></i><span>Settings</span></a>
+      <a href="{{ url_for('about') }}"
+        class="nav-item {% if request.endpoint in ['about','feedback'] %}active{% endif %}"><i
+          class="fas fa-circle-info"></i><span>About Us</span></a>
     </nav>
-    <div class="sidebar-footer"><a href="{{ url_for('logout') }}" class="nav-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
+    <div class="sidebar-footer"><a href="{{ url_for('logout') }}" class="nav-item logout-item"><i
+          class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
   </aside>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <div class="fp-main">
@@ -20,34 +28,51 @@
       <div class="topnav-left"><button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button></div>
       <div class="topnav-right">
         <a href="{{ url_for('profile', user_id=current_user.id) }}" class="user-chip">
-          {% if current_user['profile_pic'] %}<img src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" alt="">{% else %}<div class="avatar-initials">{{ current_user['username'][0].upper() }}</div>{% endif %}
+          {% if current_user['profile_pic'] %}<img
+            src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" alt="">{% else %}<div
+            class="avatar-initials">{{ current_user['username'][0].upper() }}</div>{% endif %}
           <span>{{ current_user['full_name'] or current_user['username'] }}</span>
         </a>
       </div>
     </header>
     <div class="fp-content">
       <div class="feed-column">
-        <div class="page-header"><h2><i class="fas fa-bookmark"></i> Saved Posts</h2><p>{{ posts|length }} saved posts</p></div>
+        <div class="page-header">
+          <h2><i class="fas fa-bookmark"></i> Saved Posts</h2>
+          <p>{{ posts|length }} saved posts</p>
+        </div>
         {% for post in posts %}
         <article class="post-card" data-post-id="{{ post['id'] }}">
           <div class="post-meta">
-            <div class="post-author"><div class="avatar-sm">F</div><div><strong>FarmersPulse</strong><span>{{ post['created_at'][:10] }}</span></div></div>
-            <span class="post-category cat-{{ post['category'] or 'general' }}">{{ post['category'] or 'General' }}</span>
+            <div class="post-author">
+              <div class="avatar-sm">F</div>
+              <div><strong>FarmersPulse</strong><span>{{ post['created_at'][:10] }}</span></div>
+            </div>
+            <span class="post-category cat-{{ post['category'] or 'general' }}">{{ post['category'] or 'General'
+              }}</span>
           </div>
-          {% if post['image_url'] %}<a href="{{ url_for('post_detail', post_id=post['id']) }}"><img src="{{ post['image_url'] }}" alt="{{ post['title'] }}" class="post-image" loading="lazy"></a>{% endif %}
+          {% if post['image_url'] %}<a href="{{ url_for('post_detail', post_id=post['id']) }}"><img
+              src="{{ post['image_url'] }}" alt="{{ post['title'] }}" class="post-image" loading="lazy"></a>{% endif %}
           <div class="post-body">
-            <h3 class="post-title"><a href="{{ url_for('post_detail', post_id=post['id']) }}">{{ post['title'] }}</a></h3>
+            <h3 class="post-title"><a href="{{ url_for('post_detail', post_id=post['id']) }}">{{ post['title'] }}</a>
+            </h3>
             <p style="font-size:14px;color:var(--text-muted);margin-top:6px;">{{ post['short_text'] }}</p>
           </div>
           <div class="post-actions-bar">
             <div class="post-actions-left">
-              <a href="{{ url_for('post_detail', post_id=post['id']) }}" class="action-btn"><i class="fas fa-eye"></i> View</a>
+              <a href="{{ url_for('post_detail', post_id=post['id']) }}" class="action-btn"><i class="fas fa-eye"></i>
+                View</a>
             </div>
-            <button class="action-btn save-btn saved" onclick="savePost({{ post['id'] }},this)"><i class="fas fa-bookmark"></i> Saved</button>
+            <button class="action-btn save-btn saved" onclick="savePost({{ post['id'] }},this)"><i
+                class="fas fa-bookmark"></i> Saved</button>
           </div>
         </article>
         {% else %}
-        <div class="empty-state"><i class="fas fa-bookmark"></i><h3>No saved posts</h3><p>Tap the bookmark icon on any post to save it here.</p><a href="{{ url_for('dashboard') }}" class="btn-primary-sm" style="margin-top:16px;display:inline-flex;">Browse Posts</a></div>
+        <div class="empty-state"><i class="fas fa-bookmark"></i>
+          <h3>No saved posts</h3>
+          <p>Tap the bookmark icon on any post to save it here.</p><a href="{{ url_for('dashboard') }}"
+            class="btn-primary-sm" style="margin-top:16px;display:inline-flex;">Browse Posts</a>
+        </div>
         {% endfor %}
       </div>
     </div>
@@ -56,9 +81,9 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-function savePost(id,btn){fetch(`/save/${id}`,{method:'POST'}).then(r=>r.json()).then(d=>{if(!d.saved){btn.closest('.post-card').style.opacity='0.4';showToast('Removed from saved','info');}});}
-document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active');});
-document.getElementById('sidebarClose').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
-document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+  function savePost(id, btn) { fetch(`/save/${id}`, { method: 'POST' }).then(r => r.json()).then(d => { if (!d.saved) { btn.closest('.post-card').style.opacity = '0.4'; showToast('Removed from saved', 'info'); } }); }
+  document.getElementById('hamburger').addEventListener('click', () => { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('active'); });
+  document.getElementById('sidebarClose').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('active'); });
+  document.getElementById('sidebarOverlay').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('active'); });
 </script>
 {% endblock %}

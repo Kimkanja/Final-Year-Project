@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,20 +10,22 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
+
 <body class="{% block body_class %}{% endblock %}">
   {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div class="toast-container">
-        {% for cat, msg in messages %}
-          <div class="toast toast-{{ cat }}">
-            <i class="fas fa-{% if cat == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i> {{ msg }}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
+  {% if messages %}
+  <div class="toast-container">
+    {% for cat, msg in messages %}
+    <div class="toast toast-{{ cat }}">
+      <i class="fas fa-{% if cat == 'success' %}check-circle{% else %}exclamation-circle{% endif %}"></i> {{ msg }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
   {% endwith %}
   {% block content %}{% endblock %}
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   {% block extra_js %}{% endblock %}
 </body>
+
 </html>

@@ -1,23 +1,53 @@
 {% extends "base.html" %}
-{% block title %}Reports – FarmersPulse Admin{% endblock %}
+{% block title %}Reports | FarmersPulse Admin{% endblock %}
 {% block body_class %}admin-body{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
 {% block content %}
 <div class="admin-layout">
   {% include '_admin_sidebar.html' %}
   <div class="admin-main">
     <header class="admin-topbar">
       <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
-      <div class="admin-topbar-title"><h1>Reports & Analytics</h1><span>Platform performance overview</span></div>
+      <div class="admin-topbar-title">
+        <h1>Reports & Analytics</h1><span>Platform performance overview</span>
+      </div>
     </header>
     <div class="admin-content">
 
       <!-- KPIs -->
       <div class="kpi-grid">
-        <div class="kpi-card kpi-users"><div class="kpi-icon"><i class="fas fa-users"></i></div><div class="kpi-info"><h2>{{ total_users }}</h2><p>Total Farmers</p></div><div class="kpi-trend"><span>{{ active_users }} active</span></div></div>
-        <div class="kpi-card kpi-posts"><div class="kpi-icon"><i class="fas fa-newspaper"></i></div><div class="kpi-info"><h2>{{ total_posts }}</h2><p>Total Posts</p></div><div class="kpi-trend"><span>{{ ai_posts }} AI · {{ manual_posts }} Manual</span></div></div>
-        <div class="kpi-card kpi-comments"><div class="kpi-icon"><i class="fas fa-thumbs-up"></i></div><div class="kpi-info"><h2>{{ total_likes }}</h2><p>Total Likes</p></div></div>
-        <div class="kpi-card kpi-banned"><div class="kpi-icon"><i class="fas fa-ban"></i></div><div class="kpi-info"><h2>{{ banned_users }}</h2><p>Banned Users</p></div><div class="kpi-trend"><span>{{ flagged_comments }} flagged comments</span></div></div>
+        <div class="kpi-card kpi-users">
+          <div class="kpi-icon"><i class="fas fa-users"></i></div>
+          <div class="kpi-info">
+            <h2>{{ total_users }}</h2>
+            <p>Total Farmers</p>
+          </div>
+          <div class="kpi-trend"><span>{{ active_users }} active</span></div>
+        </div>
+        <div class="kpi-card kpi-posts">
+          <div class="kpi-icon"><i class="fas fa-newspaper"></i></div>
+          <div class="kpi-info">
+            <h2>{{ total_posts }}</h2>
+            <p>Total Posts</p>
+          </div>
+          <div class="kpi-trend"><span>{{ ai_posts }} AI · {{ manual_posts }} Manual</span></div>
+        </div>
+        <div class="kpi-card kpi-comments">
+          <div class="kpi-icon"><i class="fas fa-thumbs-up"></i></div>
+          <div class="kpi-info">
+            <h2>{{ total_likes }}</h2>
+            <p>Total Likes</p>
+          </div>
+        </div>
+        <div class="kpi-card kpi-banned">
+          <div class="kpi-icon"><i class="fas fa-ban"></i></div>
+          <div class="kpi-info">
+            <h2>{{ banned_users }}</h2>
+            <p>Banned Users</p>
+          </div>
+          <div class="kpi-trend"><span>{{ flagged_comments }} flagged comments</span></div>
+        </div>
       </div>
 
       <!-- Charts Row 1 -->
@@ -26,8 +56,10 @@
           <div class="chart-card-header">
             <h3>Monthly User Signups (Last 6 Months)</h3>
             <div style="display:flex;gap:6px;">
-              <button class="chart-type-btn active" id="signupBar" onclick="switchChart('signup','bar',this)"><i class="fas fa-chart-bar"></i> Bar</button>
-              <button class="chart-type-btn" id="signupLine" onclick="switchChart('signup','line',this)"><i class="fas fa-chart-line"></i> Line</button>
+              <button class="chart-type-btn active" id="signupBar" onclick="switchChart('signup','bar',this)"><i
+                  class="fas fa-chart-bar"></i> Bar</button>
+              <button class="chart-type-btn" id="signupLine" onclick="switchChart('signup','line',this)"><i
+                  class="fas fa-chart-line"></i> Line</button>
             </div>
           </div>
           <canvas id="signupChart" height="100"></canvas>
@@ -36,8 +68,10 @@
           <div class="chart-card-header">
             <h3>Post Sources</h3>
             <div style="display:flex;gap:6px;">
-              <button class="chart-type-btn active" id="srcDoughnut" onclick="switchChart('src','doughnut',this)"><i class="fas fa-circle-half-stroke"></i> Doughnut</button>
-              <button class="chart-type-btn" id="srcPie" onclick="switchChart('src','pie',this)"><i class="fas fa-chart-pie"></i> Pie</button>
+              <button class="chart-type-btn active" id="srcDoughnut" onclick="switchChart('src','doughnut',this)"><i
+                  class="fas fa-circle-half-stroke"></i> Doughnut</button>
+              <button class="chart-type-btn" id="srcPie" onclick="switchChart('src','pie',this)"><i
+                  class="fas fa-chart-pie"></i> Pie</button>
             </div>
           </div>
           <canvas id="sourceChart" height="200"></canvas>
@@ -50,8 +84,10 @@
           <div class="chart-card-header">
             <h3>Farmers by County</h3>
             <div style="display:flex;gap:6px;">
-              <button class="chart-type-btn active" id="coyBar" onclick="switchChart('coy','bar',this)"><i class="fas fa-chart-bar"></i> Bar</button>
-              <button class="chart-type-btn" id="coyPie" onclick="switchChart('coy','pie',this)"><i class="fas fa-chart-pie"></i> Pie</button>
+              <button class="chart-type-btn active" id="coyBar" onclick="switchChart('coy','bar',this)"><i
+                  class="fas fa-chart-bar"></i> Bar</button>
+              <button class="chart-type-btn" id="coyPie" onclick="switchChart('coy','pie',this)"><i
+                  class="fas fa-chart-pie"></i> Pie</button>
             </div>
           </div>
           <canvas id="countyChart" height="220"></canvas>
@@ -60,25 +96,40 @@
           <div class="chart-card-header">
             <h3>Post Categories</h3>
             <div style="display:flex;gap:6px;">
-              <button class="chart-type-btn active" id="catDoughnut" onclick="switchChart('cat','doughnut',this)"><i class="fas fa-circle-half-stroke"></i></button>
-              <button class="chart-type-btn" id="catBar" onclick="switchChart('cat','bar',this)"><i class="fas fa-chart-bar"></i></button>
-              <button class="chart-type-btn" id="catPie" onclick="switchChart('cat','pie',this)"><i class="fas fa-chart-pie"></i></button>
+              <button class="chart-type-btn active" id="catDoughnut" onclick="switchChart('cat','doughnut',this)"><i
+                  class="fas fa-circle-half-stroke"></i></button>
+              <button class="chart-type-btn" id="catBar" onclick="switchChart('cat','bar',this)"><i
+                  class="fas fa-chart-bar"></i></button>
+              <button class="chart-type-btn" id="catPie" onclick="switchChart('cat','pie',this)"><i
+                  class="fas fa-chart-pie"></i></button>
             </div>
           </div>
           <canvas id="catChart" height="220"></canvas>
         </div>
         <div class="chart-card">
-          <div class="chart-card-header"><h3>Engagement by Category</h3></div>
+          <div class="chart-card-header">
+            <h3>Engagement by Category</h3>
+          </div>
           <canvas id="engChart" height="220"></canvas>
         </div>
       </div>
 
       <!-- Top Posts Table -->
       <div class="table-card full-width">
-        <div class="table-card-header"><h3><i class="fas fa-fire"></i> Top Posts by Engagement</h3></div>
+        <div class="table-card-header">
+          <h3><i class="fas fa-fire"></i> Top Posts by Engagement</h3>
+        </div>
         <div class="table-scroll">
           <table class="admin-table">
-            <thead><tr><th>#</th><th>Title</th><th>Category</th><th>Likes</th><th>Comments</th></tr></thead>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Likes</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
             <tbody>
               {% for p in top_posts %}
               <tr>
@@ -105,16 +156,24 @@
             <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;">Report Type</h4>
             <div class="export-options-grid">
               <div class="export-option selected" onclick="selectExport('type',this,'users')" data-val="users">
-                <span class="eo-icon">👥</span><h4>Users</h4><p>All farmer accounts & details</p>
+                <span class="eo-icon">👥</span>
+                <h4>Users</h4>
+                <p>All farmer accounts & details</p>
               </div>
               <div class="export-option" onclick="selectExport('type',this,'posts')" data-val="posts">
-                <span class="eo-icon">📰</span><h4>Posts</h4><p>All posts with stats</p>
+                <span class="eo-icon">📰</span>
+                <h4>Posts</h4>
+                <p>All posts with stats</p>
               </div>
               <div class="export-option" onclick="selectExport('type',this,'engagement')" data-val="engagement">
-                <span class="eo-icon">📊</span><h4>Engagement</h4><p>Likes, comments, saves per post</p>
+                <span class="eo-icon">📊</span>
+                <h4>Engagement</h4>
+                <p>Likes, comments, saves per post</p>
               </div>
               <div class="export-option" onclick="selectExport('type',this,'comments')" data-val="comments">
-                <span class="eo-icon">💬</span><h4>Comments</h4><p>All comments incl. flagged</p>
+                <span class="eo-icon">💬</span>
+                <h4>Comments</h4>
+                <p>All comments incl. flagged</p>
               </div>
             </div>
           </div>
@@ -124,20 +183,27 @@
             <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;">Export Format</h4>
             <div class="export-options-grid">
               <div class="export-option selected" onclick="selectExport('fmt',this,'csv')" data-val="csv">
-                <span class="eo-icon">📄</span><h4>CSV</h4><p>Excel-compatible spreadsheet</p>
+                <span class="eo-icon">📄</span>
+                <h4>CSV</h4>
+                <p>Excel-compatible spreadsheet</p>
               </div>
               <div class="export-option" onclick="selectExport('fmt',this,'json')" data-val="json">
-                <span class="eo-icon">{ }</span><h4>JSON</h4><p>Structured data for APIs</p>
+                <span class="eo-icon">{ }</span>
+                <h4>JSON</h4>
+                <p>Structured data for APIs</p>
               </div>
               <div class="export-option" onclick="selectExport('fmt',this,'html')" data-val="html">
-                <span class="eo-icon">🖨️</span><h4>HTML / PDF</h4><p>Print-ready report (save as PDF from browser)</p>
+                <span class="eo-icon">🖨️</span>
+                <h4>HTML / PDF</h4>
+                <p>Print-ready report (save as PDF from browser)</p>
               </div>
             </div>
           </div>
         </div>
 
         <div style="margin-top:20px;">
-          <button class="export-report-btn" onclick="downloadReport()"><i class="fas fa-download"></i> Download Report</button>
+          <button class="export-report-btn" onclick="downloadReport()"><i class="fas fa-download"></i> Download
+            Report</button>
         </div>
       </div>
 
@@ -148,42 +214,42 @@
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-const mly={{ monthly|safe }},cy={{ county_data|safe }},cat={{ cat_data|safe }},eng={{ cat_eng|safe }};
-const aiP={{ ai_posts }},manP={{ manual_posts }};
-const COLORS=['#2e7d32','#ff7f0e','#1565c0','#6a1b9a','#c62828','#00838f','#e65100','#558b2f'];
+  const mly = {{ monthly| safe }}, cy = {{ county_data | safe }}, cat = {{ cat_data | safe }}, eng = {{ cat_eng | safe }};
+  const aiP = {{ ai_posts }}, manP = {{ manual_posts }};
+  const COLORS = ['#2e7d32', '#ff7f0e', '#1565c0', '#6a1b9a', '#c62828', '#00838f', '#e65100', '#558b2f'];
 
-const charts={};
+  const charts = {};
 
-charts.signup=new Chart(document.getElementById('signupChart'),{type:'bar',data:{labels:mly.map(d=>d.month),datasets:[{label:'New Farmers',data:mly.map(d=>d.count),backgroundColor:'rgba(46,125,50,.7)',borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}});
-charts.src=new Chart(document.getElementById('sourceChart'),{type:'doughnut',data:{labels:['AI Generated','Manual'],datasets:[{data:[aiP,manP],backgroundColor:['#ff7f0e','#2e7d32'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},cutout:'65%'}});
-charts.coy=new Chart(document.getElementById('countyChart'),{type:'bar',data:{labels:cy.map(d=>d.label),datasets:[{label:'Farmers',data:cy.map(d=>d.value),backgroundColor:'rgba(21,101,192,.7)',borderRadius:4}]},options:{responsive:true,indexAxis:'y',plugins:{legend:{display:false}}}});
-charts.cat=new Chart(document.getElementById('catChart'),{type:'doughnut',data:{labels:cat.map(d=>d.label),datasets:[{data:cat.map(d=>d.value),backgroundColor:COLORS,borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},cutout:'65%'}});
-charts.eng=new Chart(document.getElementById('engChart'),{type:'radar',data:{labels:eng.map(d=>d.label),datasets:[{label:'Likes',data:eng.map(d=>d.value),backgroundColor:'rgba(46,125,50,.2)',borderColor:'#2e7d32',pointBackgroundColor:'#2e7d32'}]},options:{responsive:true}});
+  charts.signup = new Chart(document.getElementById('signupChart'), { type: 'bar', data: { labels: mly.map(d => d.month), datasets: [{ label: 'New Farmers', data: mly.map(d => d.count), backgroundColor: 'rgba(46,125,50,.7)', borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+  charts.src = new Chart(document.getElementById('sourceChart'), { type: 'doughnut', data: { labels: ['AI Generated', 'Manual'], datasets: [{ data: [aiP, manP], backgroundColor: ['#ff7f0e', '#2e7d32'], borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } }, cutout: '65%' } });
+  charts.coy = new Chart(document.getElementById('countyChart'), { type: 'bar', data: { labels: cy.map(d => d.label), datasets: [{ label: 'Farmers', data: cy.map(d => d.value), backgroundColor: 'rgba(21,101,192,.7)', borderRadius: 4 }] }, options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } } });
+  charts.cat = new Chart(document.getElementById('catChart'), { type: 'doughnut', data: { labels: cat.map(d => d.label), datasets: [{ data: cat.map(d => d.value), backgroundColor: COLORS, borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } }, cutout: '65%' } });
+  charts.eng = new Chart(document.getElementById('engChart'), { type: 'radar', data: { labels: eng.map(d => d.label), datasets: [{ label: 'Likes', data: eng.map(d => d.value), backgroundColor: 'rgba(46,125,50,.2)', borderColor: '#2e7d32', pointBackgroundColor: '#2e7d32' }] }, options: { responsive: true } });
 
-function switchChart(name,type,btn){
-  const c=charts[name];
-  const parent=btn.closest('.chart-card-header');
-  parent.querySelectorAll('.chart-type-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const canvas=c.canvas;const old=Chart.getChart(canvas);if(old)old.destroy();
-  let data,opts={responsive:true};
-  if(name==='signup'){data={labels:mly.map(d=>d.month),datasets:[{label:'New Farmers',data:mly.map(d=>d.count),backgroundColor:'rgba(46,125,50,.7)',borderColor:'#2e7d32',tension:.4,fill:type==='line',borderRadius:type==='bar'?6:0}]};opts.plugins={legend:{display:false}};opts.scales={y:{beginAtZero:true}};}
-  else if(name==='src'){data={labels:['AI Generated','Manual'],datasets:[{data:[aiP,manP],backgroundColor:['#ff7f0e','#2e7d32'],borderWidth:0}]};opts.plugins={legend:{position:'bottom'}};if(type==='doughnut')opts.cutout='65%';}
-  else if(name==='coy'){data={labels:cy.map(d=>d.label),datasets:[{label:'Farmers',data:cy.map(d=>d.value),backgroundColor:type==='bar'?'rgba(21,101,192,.7)':COLORS,borderRadius:4,borderWidth:0}]};if(type==='bar'){opts.indexAxis='y';opts.plugins={legend:{display:false}};}else{opts.plugins={legend:{position:'bottom'}};}}
-  else if(name==='cat'){data={labels:cat.map(d=>d.label),datasets:[{data:cat.map(d=>d.value),backgroundColor:COLORS,borderWidth:0,borderRadius:type==='bar'?6:0}]};if(type==='doughnut')opts.cutout='65%';opts.plugins={legend:{position:'bottom'}};}
-  charts[name]=new Chart(canvas,{type,data,options:opts});
-}
+  function switchChart(name, type, btn) {
+    const c = charts[name];
+    const parent = btn.closest('.chart-card-header');
+    parent.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const canvas = c.canvas; const old = Chart.getChart(canvas); if (old) old.destroy();
+    let data, opts = { responsive: true };
+    if (name === 'signup') { data = { labels: mly.map(d => d.month), datasets: [{ label: 'New Farmers', data: mly.map(d => d.count), backgroundColor: 'rgba(46,125,50,.7)', borderColor: '#2e7d32', tension: .4, fill: type === 'line', borderRadius: type === 'bar' ? 6 : 0 }] }; opts.plugins = { legend: { display: false } }; opts.scales = { y: { beginAtZero: true } }; }
+    else if (name === 'src') { data = { labels: ['AI Generated', 'Manual'], datasets: [{ data: [aiP, manP], backgroundColor: ['#ff7f0e', '#2e7d32'], borderWidth: 0 }] }; opts.plugins = { legend: { position: 'bottom' } }; if (type === 'doughnut') opts.cutout = '65%'; }
+    else if (name === 'coy') { data = { labels: cy.map(d => d.label), datasets: [{ label: 'Farmers', data: cy.map(d => d.value), backgroundColor: type === 'bar' ? 'rgba(21,101,192,.7)' : COLORS, borderRadius: 4, borderWidth: 0 }] }; if (type === 'bar') { opts.indexAxis = 'y'; opts.plugins = { legend: { display: false } }; } else { opts.plugins = { legend: { position: 'bottom' } }; } }
+    else if (name === 'cat') { data = { labels: cat.map(d => d.label), datasets: [{ data: cat.map(d => d.value), backgroundColor: COLORS, borderWidth: 0, borderRadius: type === 'bar' ? 6 : 0 }] }; if (type === 'doughnut') opts.cutout = '65%'; opts.plugins = { legend: { position: 'bottom' } }; }
+    charts[name] = new Chart(canvas, { type, data, options: opts });
+  }
 
-// Export
-let selectedType='users',selectedFmt='csv';
-function selectExport(group,el,val){
-  const parent=el.closest('.export-options-grid');
-  parent.querySelectorAll('.export-option').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-  if(group==='type')selectedType=val;else selectedFmt=val;
-}
-function downloadReport(){window.location.href=`/admin/reports/export?type=${selectedType}&format=${selectedFmt}`;}
+  // Export
+  let selectedType = 'users', selectedFmt = 'csv';
+  function selectExport(group, el, val) {
+    const parent = el.closest('.export-options-grid');
+    parent.querySelectorAll('.export-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    if (group === 'type') selectedType = val; else selectedFmt = val;
+  }
+  function downloadReport() { window.location.href = `/admin/reports/export?type=${selectedType}&format=${selectedFmt}`; }
 
-document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));
+  document.getElementById('adminHamburger').addEventListener('click', () => document.getElementById('adminSidebar').classList.toggle('open'));
 </script>
 {% endblock %}

@@ -1,22 +1,31 @@
 {% extends "base.html" %}
-{% block title %}About Us – FarmersPulse{% endblock %}
+{% block title %}About Us | FarmersPulse{% endblock %}
 {% block body_class %}farmer-body{% endblock %}
 {% block content %}
 <div class="fp-layout">
   <aside class="fp-sidebar" id="sidebar">
-    <div class="sidebar-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span><button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
+    <div class="sidebar-logo"><span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span><button
+        class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button></div>
     <nav class="sidebar-nav">
       <a href="{{ url_for('dashboard') }}" class="nav-item"><i class="fas fa-home"></i><span>Dashboard</span></a>
-      <a href="{{ url_for('dashboard', category='market') }}" class="nav-item"><i class="fas fa-chart-line"></i><span>Market Updates</span></a>
-      <a href="{{ url_for('dashboard', category='advisory') }}" class="nav-item"><i class="fas fa-leaf"></i><span>Advisories</span></a>
-      <a href="{{ url_for('dashboard', category='weather') }}" class="nav-item"><i class="fas fa-cloud-sun"></i><span>Weather</span></a>
-      <a href="{{ url_for('dashboard', category='pest') }}" class="nav-item"><i class="fas fa-bug"></i><span>Pest Alerts</span></a>
-      <a href="{{ url_for('saved_posts') }}" class="nav-item"><i class="fas fa-bookmark"></i><span>Saved Posts</span></a>
-      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item"><i class="fas fa-user"></i><span>My Profile</span></a>
+      <a href="{{ url_for('dashboard', category='market') }}" class="nav-item"><i
+          class="fas fa-chart-line"></i><span>Market Updates</span></a>
+      <a href="{{ url_for('dashboard', category='advisory') }}" class="nav-item"><i
+          class="fas fa-leaf"></i><span>Advisories</span></a>
+      <a href="{{ url_for('dashboard', category='weather') }}" class="nav-item"><i
+          class="fas fa-cloud-sun"></i><span>Weather</span></a>
+      <a href="{{ url_for('dashboard', category='pest') }}" class="nav-item"><i class="fas fa-bug"></i><span>Pest
+          Alerts</span></a>
+      <a href="{{ url_for('saved_posts') }}" class="nav-item"><i class="fas fa-bookmark"></i><span>Saved
+          Posts</span></a>
+      <a href="{{ url_for('profile', user_id=current_user.id) }}" class="nav-item"><i class="fas fa-user"></i><span>My
+          Profile</span></a>
       <a href="{{ url_for('edit_profile') }}" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></a>
-      <a href="{{ url_for('about') }}" class="nav-item active"><i class="fas fa-circle-info"></i><span>About Us</span></a>
+      <a href="{{ url_for('about') }}" class="nav-item active"><i class="fas fa-circle-info"></i><span>About
+          Us</span></a>
     </nav>
-    <div class="sidebar-footer"><a href="{{ url_for('logout') }}" class="nav-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
+    <div class="sidebar-footer"><a href="{{ url_for('logout') }}" class="nav-item logout-item"><i
+          class="fas fa-sign-out-alt"></i><span>Logout</span></a></div>
   </aside>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <div class="fp-main">
@@ -24,7 +33,9 @@
       <div class="topnav-left"><button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button></div>
       <div class="topnav-right">
         <a href="{{ url_for('profile', user_id=current_user.id) }}" class="user-chip">
-          {% if current_user['profile_pic'] %}<img src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" alt="">{% else %}<div class="avatar-initials">{{ current_user['username'][0].upper() }}</div>{% endif %}
+          {% if current_user['profile_pic'] %}<img
+            src="{{ url_for('static', filename='uploads/' + current_user['profile_pic']) }}" alt="">{% else %}<div
+            class="avatar-initials">{{ current_user['username'][0].upper() }}</div>{% endif %}
           <span>{{ current_user['full_name'] or current_user['username'] }}</span>
         </a>
       </div>
@@ -48,7 +59,10 @@
           <div class="about-card-icon green"><i class="fas fa-bullseye"></i></div>
           <div>
             <h3>Our Mission</h3>
-            <p>FarmersPulse started with a simple idea: to help small-scale Kenyan farmers access reliable, personalized information that makes their work easier and more productive. We use AI to match advisories, market prices, weather alerts, and pest warnings to each farmer's specific location, crops, and context — so every notification you receive is relevant to your farm.</p>
+            <p>FarmersPulse started with a simple idea: to help small-scale Kenyan farmers access reliable, personalized
+              information that makes their work easier and more productive. We use AI to match advisories, market
+              prices, weather alerts, and pest warnings to each farmer's specific location, crops, and context — so
+              every notification you receive is relevant to your farm.</p>
           </div>
         </div>
 
@@ -57,7 +71,9 @@
           <div class="about-card-icon orange"><i class="fas fa-robot"></i></div>
           <div>
             <h3>How the AI Personalization Works</h3>
-            <p>When you set up your profile — your county, your crops, your farm size — our AI model reads that context and filters the information feed specifically for you. A maize farmer in Narok will see different advisories than a tea farmer in Nyeri. The more complete your profile, the better we can serve you.</p>
+            <p>When you set up your profile — your county, your crops, your farm size — our AI model reads that context
+              and filters the information feed specifically for you. A maize farmer in Narok will see different
+              advisories than a tea farmer in Nyeri. The more complete your profile, the better we can serve you.</p>
           </div>
         </div>
 
@@ -104,8 +120,11 @@
           <div>
             <h3>Where to Find Us</h3>
             <p><strong>Maasai Mara University</strong> — Narok, Kenya</p>
-            <p style="margin-top:6px;">📞 <a href="tel:0717529368" style="color:var(--green);">0717529368</a> &nbsp;·&nbsp; ✉️ <a href="mailto:hellraisermiser@gmail.com" style="color:var(--green);">hellraisermiser@gmail.com</a></p>
-            <p style="margin-top:6px;font-size:13px;color:var(--text-muted);">Mon–Fri: 9:00 AM – 5:00 PM &nbsp;·&nbsp; Sat: 11:00 AM – 3:30 PM</p>
+            <p style="margin-top:6px;">📞 <a href="tel:0717529368" style="color:var(--green);">0717529368</a>
+              &nbsp;·&nbsp; ✉️ <a href="mailto:hellraisermiser@gmail.com"
+                style="color:var(--green);">hellraisermiser@gmail.com</a></p>
+            <p style="margin-top:6px;font-size:13px;color:var(--text-muted);">Mon–Fri: 9:00 AM – 5:00 PM &nbsp;·&nbsp;
+              Sat: 11:00 AM – 3:30 PM</p>
           </div>
         </div>
 
@@ -113,8 +132,10 @@
         <div class="feedback-cta">
           <div class="feedback-cta-content">
             <h3>Have a Suggestion or Found a Bug?</h3>
-            <p>We're constantly improving FarmersPulse. Tell us what's missing, what's working well, or anything you'd like to see added. Your feedback directly shapes how the platform evolves.</p>
-            <a href="{{ url_for('feedback') }}" class="btn-primary-sm" style="margin-top:16px;display:inline-flex;font-size:15px;padding:12px 28px;">
+            <p>We're constantly improving FarmersPulse. Tell us what's missing, what's working well, or anything you'd
+              like to see added. Your feedback directly shapes how the platform evolves.</p>
+            <a href="{{ url_for('feedback') }}" class="btn-primary-sm"
+              style="margin-top:16px;display:inline-flex;font-size:15px;padding:12px 28px;">
               <i class="fas fa-paper-plane"></i> Send Feedback
             </a>
           </div>
@@ -136,9 +157,12 @@
           </div>
         </div>
         <div class="widget-card" style="background:linear-gradient(135deg,var(--green-dark),var(--green));color:#fff;">
-          <h4 style="font-size:14px;font-weight:700;margin-bottom:8px;color:#fff;"><i class="fas fa-lightbulb"></i> Help Us Grow</h4>
-          <p style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:12px;">Your feedback helps us make FarmersPulse better for every farmer in Kenya.</p>
-          <a href="{{ url_for('feedback') }}" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;">
+          <h4 style="font-size:14px;font-weight:700;margin-bottom:8px;color:#fff;"><i class="fas fa-lightbulb"></i> Help
+            Us Grow</h4>
+          <p style="font-size:13px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:12px;">Your feedback helps
+            us make FarmersPulse better for every farmer in Kenya.</p>
+          <a href="{{ url_for('feedback') }}"
+            style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;">
             <i class="fas fa-paper-plane"></i> Give Feedback
           </a>
         </div>
@@ -149,8 +173,8 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-document.getElementById('hamburger').addEventListener('click',()=>{document.getElementById('sidebar').classList.add('open');document.getElementById('sidebarOverlay').classList.add('active');});
-document.getElementById('sidebarClose').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
-document.getElementById('sidebarOverlay').addEventListener('click',()=>{document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');});
+  document.getElementById('hamburger').addEventListener('click', () => { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('active'); });
+  document.getElementById('sidebarClose').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('active'); });
+  document.getElementById('sidebarOverlay').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('active'); });
 </script>
 {% endblock %}

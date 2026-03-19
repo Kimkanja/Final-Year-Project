@@ -1,19 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Feedback Inbox – FarmersPulse Admin{% endblock %}
+{% block title %}Feedback Inbox | FarmersPulse Admin{% endblock %}
 {% block body_class %}admin-body{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
 {% block content %}
 <div class="admin-layout">
   {% include '_admin_sidebar.html' %}
   <div class="admin-main">
     <header class="admin-topbar">
       <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
-      <div class="admin-topbar-title"><h1>Feedback Inbox</h1><span>{{ counts.total }} total · {{ counts.unread }} unread</span></div>
+      <div class="admin-topbar-title">
+        <h1>Feedback Inbox</h1><span>{{ counts.total }} total · {{ counts.unread }} unread</span>
+      </div>
       <div class="admin-topbar-right">
-        <a href="{{ url_for('admin_feedback') }}" class="btn-admin-outline {% if not status_filter %}active{% endif %}">All ({{ counts.total }})</a>
-        <a href="{{ url_for('admin_feedback', status='unread') }}" class="btn-admin-outline {% if status_filter=='unread' %}active{% endif %}" style="{% if counts.unread %}border-color:#ff7f0e;color:#ff7f0e;{% endif %}">Unread ({{ counts.unread }})</a>
-        <a href="{{ url_for('admin_feedback', status='reviewed') }}" class="btn-admin-outline {% if status_filter=='reviewed' %}active{% endif %}">Reviewed ({{ counts.reviewed }})</a>
-        <a href="{{ url_for('admin_feedback', status='resolved') }}" class="btn-admin-outline {% if status_filter=='resolved' %}active{% endif %}">Resolved ({{ counts.resolved }})</a>
+        <a href="{{ url_for('admin_feedback') }}"
+          class="btn-admin-outline {% if not status_filter %}active{% endif %}">All ({{ counts.total }})</a>
+        <a href="{{ url_for('admin_feedback', status='unread') }}"
+          class="btn-admin-outline {% if status_filter=='unread' %}active{% endif %}"
+          style="{% if counts.unread %}border-color:#ff7f0e;color:#ff7f0e;{% endif %}">Unread ({{ counts.unread }})</a>
+        <a href="{{ url_for('admin_feedback', status='reviewed') }}"
+          class="btn-admin-outline {% if status_filter=='reviewed' %}active{% endif %}">Reviewed ({{ counts.reviewed
+          }})</a>
+        <a href="{{ url_for('admin_feedback', status='resolved') }}"
+          class="btn-admin-outline {% if status_filter=='resolved' %}active{% endif %}">Resolved ({{ counts.resolved
+          }})</a>
       </div>
     </header>
     <div class="admin-content">
@@ -23,13 +33,17 @@
         <div class="feedback-item {% if fb['status']=='unread' %}feedback-unread{% endif %}" id="fb-{{ fb['id'] }}">
           <div class="feedback-item-header">
             <div class="feedback-meta">
-              <span class="feedback-category-badge cat-{{ fb['category'] }}">{{ fb['category'].replace('_',' ').title() }}</span>
+              <span class="feedback-category-badge cat-{{ fb['category'] }}">{{ fb['category'].replace('_',' ').title()
+                }}</span>
               <strong style="font-size:15px;">{{ fb['subject'] }}</strong>
-              <span style="font-size:12px;color:var(--text-muted);">from {{ fb['name'] }} (@{{ fb['username'] or 'unknown' }}) · {{ fb['created_at'][:16] }}</span>
+              <span style="font-size:12px;color:var(--text-muted);">from {{ fb['name'] }} (@{{ fb['username'] or
+                'unknown' }}) · {{ fb['created_at'][:16] }}</span>
               <a href="mailto:{{ fb['email'] }}" style="font-size:12px;color:var(--green);">{{ fb['email'] }}</a>
             </div>
             <div class="feedback-status">
-              <span class="status-badge {% if fb['status']=='unread' %}inactive{% elif fb['status']=='resolved' %}active{% else %}status-reviewed{% endif %}">{{ fb['status'].title() }}</span>
+              <span
+                class="status-badge {% if fb['status']=='unread' %}inactive{% elif fb['status']=='resolved' %}active{% else %}status-reviewed{% endif %}">{{
+                fb['status'].title() }}</span>
             </div>
           </div>
           <div class="feedback-message">{{ fb['message'] }}</div>
@@ -44,17 +58,22 @@
             <summary>Reply & Update Status</summary>
             <form method="POST" action="{{ url_for('update_feedback', fid=fb['id']) }}" style="margin-top:12px;">
               <div style="margin-bottom:10px;">
-                <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">Admin Reply (optional)</label>
-                <textarea name="admin_reply" rows="3" style="width:100%;padding:10px;border:1.5px solid #dde8dd;border-radius:8px;font-size:13px;font-family:'Times New Roman',serif;resize:vertical;" placeholder="Write a reply to send to the farmer...">{{ fb['admin_reply'] or '' }}</textarea>
+                <label style="font-size:13px;font-weight:700;display:block;margin-bottom:4px;">Admin Reply
+                  (optional)</label>
+                <textarea name="admin_reply" rows="3"
+                  style="width:100%;padding:10px;border:1.5px solid #dde8dd;border-radius:8px;font-size:13px;font-family:'Times New Roman',serif;resize:vertical;"
+                  placeholder="Write a reply to send to the farmer...">{{ fb['admin_reply'] or '' }}</textarea>
               </div>
               <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                <select name="status" style="padding:8px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:13px;font-family:'Times New Roman',serif;">
+                <select name="status"
+                  style="padding:8px 12px;border:1.5px solid #dde8dd;border-radius:8px;font-size:13px;font-family:'Times New Roman',serif;">
                   <option value="unread" {% if fb['status']=='unread' %}selected{% endif %}>Unread</option>
                   <option value="reviewed" {% if fb['status']=='reviewed' %}selected{% endif %}>Reviewed</option>
                   <option value="resolved" {% if fb['status']=='resolved' %}selected{% endif %}>Resolved</option>
                 </select>
                 <button type="submit" class="btn-admin-primary"><i class="fas fa-save"></i> Save</button>
-                <button type="button" class="btn-admin-outline" onclick="deleteFeedback({{ fb['id'] }})"><i class="fas fa-trash"></i> Delete</button>
+                <button type="button" class="btn-admin-outline" onclick="deleteFeedback({{ fb['id'] }})"><i
+                    class="fas fa-trash"></i> Delete</button>
               </div>
             </form>
           </details>
@@ -74,12 +93,12 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-function deleteFeedback(id){
-  if(!confirm('Delete this feedback permanently?'))return;
-  fetch(`/admin/feedback/delete/${id}`,{method:'POST'}).then(r=>r.json()).then(d=>{
-    if(d.success){document.getElementById(`fb-${id}`).style.opacity='0';setTimeout(()=>document.getElementById(`fb-${id}`).remove(),300);}
-  });
-}
-document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));
+  function deleteFeedback(id) {
+    if (!confirm('Delete this feedback permanently?')) return;
+    fetch(`/admin/feedback/delete/${id}`, { method: 'POST' }).then(r => r.json()).then(d => {
+      if (d.success) { document.getElementById(`fb-${id}`).style.opacity = '0'; setTimeout(() => document.getElementById(`fb-${id}`).remove(), 300); }
+    });
+  }
+  document.getElementById('adminHamburger').addEventListener('click', () => document.getElementById('adminSidebar').classList.toggle('open'));
 </script>
 {% endblock %}

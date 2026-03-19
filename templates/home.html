@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>Home | FarmersPulse</title>
@@ -17,6 +18,7 @@
       font-size: 14px;
       color: #555;
     }
+
     .post-actions span {
       margin-right: 15px;
       cursor: pointer;
@@ -25,25 +27,33 @@
       gap: 5px;
       transition: color 0.2s;
     }
+
     .post-actions span:hover {
-      color: #1a73e8; /* Highlight color */
+      color: #1a73e8;
+      /* Highlight color */
     }
+
     .post-time {
       font-size: 12px;
       color: #888;
       text-align: right;
-      margin-bottom: 8px; /* slightly more space */
+      margin-bottom: 8px;
+      /* slightly more space */
     }
+
     .post-header {
       display: block;
       font-weight: bold;
       font-size: 18px;
-      margin: 12px 0; /* bigger gap below timestamp */
+      margin: 12px 0;
+      /* bigger gap below timestamp */
       color: #333;
     }
+
     .post-content p {
       margin: 6px 0;
     }
+
     .read-more {
       color: #ff7f0e;
       cursor: pointer;
@@ -52,155 +62,164 @@
     }
   </style>
 </head>
+
 <body>
 
-<!-- Mobile Header -->
-<header class="mobile-header">
-  <div class="mobile-logo">FarmersPulse</div>
-  <div class="hamburger" id="hamburger">&#9776;</div>
-</header>
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <div class="mobile-logo">FarmersPulse</div>
+    <div class="hamburger" id="hamburger">&#9776;</div>
+  </header>
 
-<!-- Mobile Menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <ul>
-    <li>Dashboard</li>
-    <li>Market Updates</li>
-    <li>Advisories</li>
-    <li>My Farm</li>
-    <li>Settings</li>
-  </ul>
-</div>
-
-<div class="layout">
-
-  <!-- Sidebar (desktop only) -->
-  <aside class="sidebar">
-    <h2 class="logo">FarmersPulse</h2>
-    <ul class="menu">
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <ul>
       <li>Dashboard</li>
       <li>Market Updates</li>
       <li>Advisories</li>
       <li>My Farm</li>
       <li>Settings</li>
     </ul>
-  </aside>
+  </div>
 
-  <!-- Main Content -->
-  <main class="feed">
+  <div class="layout">
 
-    <!-- Welcome Card -->
-    <div class="welcome-card">
-      <h2>Welcome back, Farmer Kimani</h2>
-      <p>Stay updated with the latest agricultural insights, market trends, and farm management tips tailored for you.</p>
-    </div>
+    <!-- Sidebar (desktop only) -->
+    <aside class="sidebar">
+      <h2 class="logo">FarmersPulse</h2>
+      <ul class="menu">
+        <li>Dashboard</li>
+        <li>Market Updates</li>
+        <li>Advisories</li>
+        <li>My Farm</li>
+        <li>Settings</li>
+      </ul>
+    </aside>
 
-    <!-- Post 1 -->
-    <div class="post">
-      <div class="post-time">2026-03-01 10:15 AM</div>
-      <div class="post-header">Maize Advisory Update</div>
-      <img src="https://picsum.photos/600/400?random=1" class="post-image">
-      <div class="post-content">
-        <p class="short-text">Apply nitrogen fertilizer during early growth stage to improve yield...</p>
-        <p class="full-text" style="display:none;">This includes monitoring soil moisture, avoiding over-fertilization, and applying potassium if needed. Early fertilizer application boosts leaf and cob development for higher harvest yields.</p>
-        <a href="#" class="read-more">Read more</a>
+    <!-- Main Content -->
+    <main class="feed">
+
+      <!-- Welcome Card -->
+      <div class="welcome-card">
+        <h2>Welcome back, Farmer Kimani</h2>
+        <p>Stay updated with the latest agricultural insights, market trends, and farm management tips tailored for you.
+        </p>
       </div>
-      <div class="post-footer">
-        <div class="post-actions">
-          <span class="like"><i class="fas fa-thumbs-up"></i> Like</span>
-          <span class="dislike"><i class="fas fa-thumbs-down"></i> Dislike</span>
-          <span class="share"><i class="fas fa-share"></i> Share</span>
-          <span class="save"><i class="fas fa-bookmark"></i> Save</span>
+
+      <!-- Post 1 -->
+      <div class="post">
+        <div class="post-time">2026-03-01 10:15 AM</div>
+        <div class="post-header">Maize Advisory Update</div>
+        <img src="https://picsum.photos/600/400?random=1" class="post-image">
+        <div class="post-content">
+          <p class="short-text">Apply nitrogen fertilizer during early growth stage to improve yield...</p>
+          <p class="full-text" style="display:none;">This includes monitoring soil moisture, avoiding
+            over-fertilization, and applying potassium if needed. Early fertilizer application boosts leaf and cob
+            development for higher harvest yields.</p>
+          <a href="#" class="read-more">Read more</a>
+        </div>
+        <div class="post-footer">
+          <div class="post-actions">
+            <span class="like"><i class="fas fa-thumbs-up"></i> Like</span>
+            <span class="dislike"><i class="fas fa-thumbs-down"></i> Dislike</span>
+            <span class="share"><i class="fas fa-share"></i> Share</span>
+            <span class="save"><i class="fas fa-bookmark"></i> Save</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Post 2 -->
-    <div class="post">
-      <div class="post-time">2026-03-01 09:45 AM</div>
-      <div class="post-header">Market Price Alert</div>
-      <img src="https://picsum.photos/600/400?random=2" class="post-image">
-      <div class="post-content">
-        <p class="short-text">Maize prices have increased by 8% in Narok County this week...</p>
-        <p class="full-text" style="display:none;">Local market conditions and recent demand have pushed maize prices higher. Farmers are advised to consider timing their sales strategically to maximize profit. Monitoring supply trends in nearby counties may also help anticipate further price changes.</p>
-        <a href="#" class="read-more">Read more</a>
-      </div>
-      <div class="post-footer">
-        <div class="post-actions">
-          <span class="like"><i class="fas fa-thumbs-up"></i> Like</span>
-          <span class="dislike"><i class="fas fa-thumbs-down"></i> Dislike</span>
-          <span class="share"><i class="fas fa-share"></i> Share</span>
-          <span class="save"><i class="fas fa-bookmark"></i> Save</span>
+      <!-- Post 2 -->
+      <div class="post">
+        <div class="post-time">2026-03-01 09:45 AM</div>
+        <div class="post-header">Market Price Alert</div>
+        <img src="https://picsum.photos/600/400?random=2" class="post-image">
+        <div class="post-content">
+          <p class="short-text">Maize prices have increased by 8% in Narok County this week...</p>
+          <p class="full-text" style="display:none;">Local market conditions and recent demand have pushed maize prices
+            higher. Farmers are advised to consider timing their sales strategically to maximize profit. Monitoring
+            supply trends in nearby counties may also help anticipate further price changes.</p>
+          <a href="#" class="read-more">Read more</a>
+        </div>
+        <div class="post-footer">
+          <div class="post-actions">
+            <span class="like"><i class="fas fa-thumbs-up"></i> Like</span>
+            <span class="dislike"><i class="fas fa-thumbs-down"></i> Dislike</span>
+            <span class="share"><i class="fas fa-share"></i> Share</span>
+            <span class="save"><i class="fas fa-bookmark"></i> Save</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Post 3 -->
-    <div class="post">
-      <div class="post-time">2026-03-01 08:30 AM</div>
-      <div class="post-header">Weather Forecast</div>
-      <img src="https://picsum.photos/600/400?random=3" class="post-image">
-      <div class="post-content">
-        <p class="short-text">Moderate rainfall expected over the next three days...</p>
-        <p class="full-text" style="display:none;">Farmers should prepare drainage systems to prevent waterlogging. It's advisable to check crop shelters and ensure seeds and seedlings are protected. Monitor local weather updates for changes in rainfall patterns and wind speeds.</p>
-        <a href="#" class="read-more">Read more</a>
-      </div>
-      <div class="post-footer">
-        <div class="post-actions">
-          <span class="like"><i class="fas fa-thumbs-up"></i> Like</span>
-          <span class="dislike"><i class="fas fa-thumbs-down"></i> Dislike</span>
-          <span class="share"><i class="fas fa-share"></i> Share</span>
-          <span class="save"><i class="fas fa-bookmark"></i> Save</span>
+      <!-- Post 3 -->
+      <div class="post">
+        <div class="post-time">2026-03-01 08:30 AM</div>
+        <div class="post-header">Weather Forecast</div>
+        <img src="https://picsum.photos/600/400?random=3" class="post-image">
+        <div class="post-content">
+          <p class="short-text">Moderate rainfall expected over the next three days...</p>
+          <p class="full-text" style="display:none;">Farmers should prepare drainage systems to prevent waterlogging.
+            It's advisable to check crop shelters and ensure seeds and seedlings are protected. Monitor local weather
+            updates for changes in rainfall patterns and wind speeds.</p>
+          <a href="#" class="read-more">Read more</a>
+        </div>
+        <div class="post-footer">
+          <div class="post-actions">
+            <span class="like"><i class="fas fa-thumbs-up"></i> Like</span>
+            <span class="dislike"><i class="fas fa-thumbs-down"></i> Dislike</span>
+            <span class="share"><i class="fas fa-share"></i> Share</span>
+            <span class="save"><i class="fas fa-bookmark"></i> Save</span>
+          </div>
         </div>
       </div>
-    </div>
 
-  </main>
+    </main>
 
-  <!-- Right Panel (desktop only) -->
-  <aside class="right-panel">
-    <div class="profile-card">
-      <img src="https://picsum.photos/100" alt="Profile">
-      <h4>Kimani Karanja</h4>
-      <p>Maize & Dairy Farmer</p>
-    </div>
-    <div class="notifications">
-      <h3>Notifications</h3>
-      <div class="notification-item">New fertilizer advisory available.</div>
-      <div class="notification-item">Market price update for maize.</div>
-      <div class="notification-item">Weather alert: Rain expected tomorrow.</div>
-      <div class="notification-item">Livestock vaccination campaign ongoing.</div>
-    </div>
-  </aside>
+    <!-- Right Panel (desktop only) -->
+    <aside class="right-panel">
+      <div class="profile-card">
+        <img src="https://picsum.photos/100" alt="Profile">
+        <h4>Kimani Karanja</h4>
+        <p>Maize & Dairy Farmer</p>
+      </div>
+      <div class="notifications">
+        <h3>Notifications</h3>
+        <div class="notification-item">New fertilizer advisory available.</div>
+        <div class="notification-item">Market price update for maize.</div>
+        <div class="notification-item">Weather alert: Rain expected tomorrow.</div>
+        <div class="notification-item">Livestock vaccination campaign ongoing.</div>
+      </div>
+    </aside>
 
-</div>
+  </div>
 
-<script>
-  // Hamburger toggle
-  const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
-  hamburger.addEventListener('click', () => {
-    mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
-  });
-
-  // Read more toggle
-  document.querySelectorAll('.read-more').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const postContent = link.parentElement;
-      const shortText = postContent.querySelector('.short-text');
-      const fullText = postContent.querySelector('.full-text');
-      if(fullText.style.display === 'none'){
-        fullText.style.display = 'block';
-        shortText.style.display = 'none';
-        link.textContent = 'Read less';
-      } else {
-        fullText.style.display = 'none';
-        shortText.style.display = 'block';
-        link.textContent = 'Read more';
-      }
+  <script>
+    // Hamburger toggle
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    hamburger.addEventListener('click', () => {
+      mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
     });
-  });
-</script>
+
+    // Read more toggle
+    document.querySelectorAll('.read-more').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const postContent = link.parentElement;
+        const shortText = postContent.querySelector('.short-text');
+        const fullText = postContent.querySelector('.full-text');
+        if (fullText.style.display === 'none') {
+          fullText.style.display = 'block';
+          shortText.style.display = 'none';
+          link.textContent = 'Read less';
+        } else {
+          fullText.style.display = 'none';
+          shortText.style.display = 'block';
+          link.textContent = 'Read more';
+        }
+      });
+    });
+  </script>
 
 </body>
+
 </html>

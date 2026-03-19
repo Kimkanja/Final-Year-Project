@@ -619,7 +619,7 @@ button {
   padding: 3px 10px;
   border-radius: 12px;
   z-index: 1;
-  
+
 }
 
 .ai-badge {
@@ -2439,18 +2439,24 @@ button {
     padding: 14px;
     gap: 14px;
   }
-  .user-chip{
+
+  .user-chip {
     visibility: hidden;
   }
-  .notif-btn{
-position: absolute;
-  right: 12px;  /* distance from the right edge */
-  top: 50%;     /* optional vertical centering */
-  transform: translateY(-50%)  }
-  
-  .settings-section-title{
+
+  .notif-btn {
+    position: absolute;
+    right: 12px;
+    /* distance from the right edge */
+    top: 50%;
+    /* optional vertical centering */
+    transform: translateY(-50%)
+  }
+
+  .settings-section-title {
     font-size: 10px;
   }
+
   /* Hide right panel on phone */
   .right-panel {
     display: none;
@@ -2531,14 +2537,18 @@ position: absolute;
 }
 
 .team-avatar {
-  width: 50px;          /* adjust size if needed */
+  width: 50px;
+  /* adjust size if needed */
   height: 50px;
-  border-radius: 50%;   /* makes it circular */
-  overflow: hidden;     /* hides extra parts of image */
+  border-radius: 50%;
+  /* makes it circular */
+  overflow: hidden;
+  /* hides extra parts of image */
 }
 
 .team-avatar img {
   width: 100%;
   height: 100%;
-  object-fit: cover;    /* keeps image nicely cropped */
+  object-fit: cover;
+  /* keeps image nicely cropped */
 }

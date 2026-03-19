@@ -1,23 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Manage Posts – FarmersPulse Admin{% endblock %}
+{% block title %}Manage Posts | FarmersPulse Admin{% endblock %}
 {% block body_class %}admin-body{% endblock %}
-{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">{% endblock %}
 {% block content %}
 <div class="admin-layout">
   {% include '_admin_sidebar.html' %}
   <div class="admin-main">
     <header class="admin-topbar">
       <button class="admin-hamburger" id="adminHamburger"><i class="fas fa-bars"></i></button>
-      <div class="admin-topbar-title"><h1>Manage Posts</h1><span>{{ total }} total posts</span></div>
+      <div class="admin-topbar-title">
+        <h1>Manage Posts</h1><span>{{ total }} total posts</span>
+      </div>
       <div class="admin-topbar-right">
         <a href="{{ url_for('admin_create_post') }}" class="btn-admin-primary"><i class="fas fa-plus"></i> New Post</a>
-        <a href="{{ url_for('export_report', type='posts', format='csv') }}" class="btn-admin-outline"><i class="fas fa-download"></i> Export</a>
+        <a href="{{ url_for('export_report', type='posts', format='csv') }}" class="btn-admin-outline"><i
+            class="fas fa-download"></i> Export</a>
       </div>
     </header>
     <div class="admin-content">
       <div class="admin-filters">
         <form method="GET" action="{{ url_for('admin_posts') }}" class="filter-row">
-          <div class="search-bar-admin"><i class="fas fa-search"></i><input type="text" name="search" placeholder="Search posts..." value="{{ search }}"></div>
+          <div class="search-bar-admin"><i class="fas fa-search"></i><input type="text" name="search"
+              placeholder="Search posts..." value="{{ search }}"></div>
           <select name="category" onchange="this.form.submit()" class="filter-select">
             <option value="">All Categories</option>
             {% for c in ['advisory','market','weather','pest','livestock'] %}
@@ -30,40 +35,69 @@
       <div class="table-card full-width">
         <div class="table-scroll">
           <table class="admin-table">
-            <thead><tr><th>Title</th><th>Category</th><th>Source</th><th>Likes</th><th>Comments</th><th>Created</th><th>Published</th><th>Pinned</th><th>Actions</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Source</th>
+                <th>Likes</th>
+                <th>Comments</th>
+                <th>Created</th>
+                <th>Published</th>
+                <th>Pinned</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
             <tbody>
               {% for item in posts_data %}
               {% set p = item.post %}
               <tr>
-                <td><a href="{{ url_for('admin_edit_post', pid=p['id']) }}" class="table-link">{{ p['title'][:50] }}{% if p['title']|length > 50 %}…{% endif %}</a></td>
+                <td><a href="{{ url_for('admin_edit_post', pid=p['id']) }}" class="table-link">{{ p['title'][:50] }}{%
+                    if p['title']|length > 50 %}…{% endif %}</a></td>
                 <td><span class="cat-badge cat-{{ p['category'] }}">{{ p['category'] or '—' }}</span></td>
-                <td><span class="source-badge source-{{ p['source'] }}">{{ 'AI' if p['source']=='ai_model' else 'Manual' }}</span></td>
+                <td><span class="source-badge source-{{ p['source'] }}">{{ 'AI' if p['source']=='ai_model' else 'Manual'
+                    }}</span></td>
                 <td><i class="fas fa-thumbs-up" style="color:#2e7d32;margin-right:4px;"></i>{{ item.likes }}</td>
                 <td><i class="fas fa-comment" style="color:#1565c0;margin-right:4px;"></i>{{ item.comments }}</td>
                 <td>{{ p['created_at'][:10] }}</td>
-                <td><button class="toggle-switch {% if p['is_published'] %}on{% endif %}" onclick="togglePost({{ p['id'] }},this)" title="{{ 'Unpublish' if p['is_published'] else 'Publish' }}"><span></span></button></td>
-                <td>{% if p['is_pinned'] %}<i class="fas fa-thumbtack" style="color:#ff7f0e;"></i>{% else %}—{% endif %}</td>
+                <td><button class="toggle-switch {% if p['is_published'] %}on{% endif %}"
+                    onclick="togglePost({{ p['id'] }},this)"
+                    title="{{ 'Unpublish' if p['is_published'] else 'Publish' }}"><span></span></button></td>
+                <td>{% if p['is_pinned'] %}<i class="fas fa-thumbtack" style="color:#ff7f0e;"></i>{% else %}—{% endif %}
+                </td>
                 <td>
                   <div class="action-btns">
-                    <a href="{{ url_for('admin_edit_post', pid=p['id']) }}" class="tbl-btn tbl-edit" title="Edit"><i class="fas fa-edit"></i></a>
-                    <a href="{{ url_for('post_detail', post_id=p['id']) }}" class="tbl-btn tbl-view" target="_blank" title="View"><i class="fas fa-eye"></i></a>
-                    <form method="POST" action="{{ url_for('admin_delete_post', pid=p['id']) }}" style="display:inline;" onsubmit="return confirm('Delete this post?')">
-                      <button type="submit" class="tbl-btn tbl-delete" title="Delete"><i class="fas fa-trash"></i></button>
+                    <a href="{{ url_for('admin_edit_post', pid=p['id']) }}" class="tbl-btn tbl-edit" title="Edit"><i
+                        class="fas fa-edit"></i></a>
+                    <a href="{{ url_for('post_detail', post_id=p['id']) }}" class="tbl-btn tbl-view" target="_blank"
+                      title="View"><i class="fas fa-eye"></i></a>
+                    <form method="POST" action="{{ url_for('admin_delete_post', pid=p['id']) }}" style="display:inline;"
+                      onsubmit="return confirm('Delete this post?')">
+                      <button type="submit" class="tbl-btn tbl-delete" title="Delete"><i
+                          class="fas fa-trash"></i></button>
                     </form>
                   </div>
                 </td>
               </tr>
               {% else %}
-              <tr><td colspan="9" class="empty-td">No posts found.</td></tr>
+              <tr>
+                <td colspan="9" class="empty-td">No posts found.</td>
+              </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
         {% if total_pages > 1 %}
         <div class="pagination" style="padding:12px 20px;">
-          {% if page > 1 %}<a href="{{ url_for('admin_posts', page=page-1, search=search, category=category) }}" class="page-btn"><i class="fas fa-chevron-left"></i></a>{% endif %}
-          {% for p in range(1, total_pages+1) %}{% if p==page %}<span class="page-btn active">{{ p }}</span>{% elif p==1 or p==total_pages or (p>=page-2 and p<=page+2) %}<a href="{{ url_for('admin_posts', page=p, search=search, category=category) }}" class="page-btn">{{ p }}</a>{% elif p==page-3 or p==page+3 %}<span class="page-ellipsis">…</span>{% endif %}{% endfor %}
-          {% if page < total_pages %}<a href="{{ url_for('admin_posts', page=page+1, search=search, category=category) }}" class="page-btn"><i class="fas fa-chevron-right"></i></a>{% endif %}
+          {% if page > 1 %}<a href="{{ url_for('admin_posts', page=page-1, search=search, category=category) }}"
+            class="page-btn"><i class="fas fa-chevron-left"></i></a>{% endif %}
+          {% for p in range(1, total_pages+1) %}{% if p==page %}<span class="page-btn active">{{ p }}</span>{% elif p==1
+          or p==total_pages or (p>=page-2 and p<=page+2) %}<a
+            href="{{ url_for('admin_posts', page=p, search=search, category=category) }}" class="page-btn">{{ p }}</a>{%
+            elif p==page-3 or p==page+3 %}<span class="page-ellipsis">…</span>{% endif %}{% endfor %}
+            {% if page < total_pages %}<a
+              href="{{ url_for('admin_posts', page=page+1, search=search, category=category) }}" class="page-btn"><i
+                class="fas fa-chevron-right"></i></a>{% endif %}
         </div>
         {% endif %}
       </div>
@@ -73,7 +107,7 @@
 {% endblock %}
 {% block extra_js %}
 <script>
-function togglePost(id,btn){fetch(`/admin/posts/toggle/${id}`,{method:'POST'}).then(r=>r.json()).then(d=>{btn.classList.toggle('on',d.published);});}
-document.getElementById('adminHamburger').addEventListener('click',()=>document.getElementById('adminSidebar').classList.toggle('open'));
+  function togglePost(id, btn) { fetch(`/admin/posts/toggle/${id}`, { method: 'POST' }).then(r => r.json()).then(d => { btn.classList.toggle('on', d.published); }); }
+  document.getElementById('adminHamburger').addEventListener('click', () => document.getElementById('adminSidebar').classList.toggle('open'));
 </script>
 {% endblock %}
