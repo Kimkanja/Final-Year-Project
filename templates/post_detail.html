@@ -52,7 +52,9 @@
         <article class="post-card post-detail-card">
           <div class="post-meta">
             <div class="post-author">
-              <div class="avatar-sm">F</div>
+              <div class="avatar-sm">
+                <img src="/static/images/FarmersPulse_logo.png" alt="FarmersPulse Logo">
+              </div>
               <div><strong>FarmersPulse</strong><span>{{ post['created_at'][:16] }}</span></div>
             </div>
             <span class="post-category cat-{{ post['category'] or 'general' }}">{{ post['category'] or 'General'

@@ -286,9 +286,10 @@ button {
   color: var(--text);
   padding: 4px 8px;
 }
-  .sidebar-logo-phone {
-    display: none;
-    }
+
+.sidebar-logo-phone {
+  display: none;
+}
 
 .search-form {
   display: flex;
@@ -2236,6 +2237,7 @@ button {
     padding: 6px 10px;
     font-size: 12px;
   }
+
   .fp-topnav {
     display: flex;
     justify-content: space-between;
@@ -2501,22 +2503,20 @@ button {
     padding: 14px;
     gap: 14px;
   }
-  .sidebar-logo-phone{
-  display: flex;
-  font-weight: 900;
-}
+
+  .sidebar-logo-phone {
+    display: flex;
+    font-weight: 900;
+  }
 
   .user-chip {
-    visibility: hidden;
+    display: none;
   }
 
   .notif-btn {
-    position: absolute;
-    right: 12px;
-    /* distance from the right edge */
-    top: 50%;
-    /* optional vertical centering */
-    transform: translateY(-50%)
+    position: relative;
+    top: unset;
+    transform: none;
   }
 
   .settings-section-title {
@@ -2617,4 +2617,26 @@ button {
   height: 100%;
   object-fit: cover;
   /* keeps image nicely cropped */
+}
+
+
+@media (max-width: 768px) {
+
+  /* ADD THESE TWO LINES */
+  .search-desktop {
+    display: none;
+  }
+
+  .search-mobile {
+    display: flex;
+    width: 140px;
+    padding: 6px 10px;
+  }
+
+  /* rest of your existing mobile fixes stay unchanged... */
+}
+
+/* Hidden on desktop, shown only on mobile */
+.search-mobile {
+  display: none;
 }
