@@ -302,6 +302,7 @@ button {
   width: 420px;
   max-width: 100%;
   margin: 0 auto;
+  height: 30px;
 }
 
 .search-form i {
@@ -2260,6 +2261,7 @@ button {
     align-items: center;
     font-weight: 900;
     white-space: nowrap;
+    font-size: 19px;
   }
 
   /* Right side: notifications + profile + search */
