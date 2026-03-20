@@ -31,6 +31,9 @@
   <div class="fp-main">
     <header class="fp-topnav">
       <div class="topnav-left"><button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button></div>
+       <div class="sidebar-logo-phone">
+          <span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span>
+        </div>
       <div class="topnav-right">
         <a href="{{ url_for('profile', user_id=current_user.id) }}" class="user-chip">
           {% if current_user['profile_pic'] %}<img
@@ -81,7 +84,9 @@
         <div class="about-section-title"><i class="fas fa-users"></i> The Team</div>
         <div class="team-grid">
           <div class="team-card">
-            <div class="team-avatar" style="background:linear-gradient(135deg,#2e7d32,#66bb6a);">DA</div>
+            <div class="team-sm">
+                <img src="/static/images/team/Dr_Anil_Kumar_mini.png" alt="FarmersPulse Logo">
+              </div>
             <div class="team-info">
               <h4>Dr. Anil Kumar</h4>
               <span class="team-role">Co-ordinator</span>
@@ -89,7 +94,9 @@
             </div>
           </div>
           <div class="team-card">
-            <div class="team-avatar" style="background:linear-gradient(135deg,#1565c0,#42a5f5);">DB</div>
+            <div class="team-sm">
+                <img src="/static/images/team/Dr_Joash_Bii.png" alt="FarmersPulse Logo">
+              </div>
             <div class="team-info">
               <h4>Dr. Joash Bii</h4>
               <span class="team-role">Supervisor</span>
@@ -97,7 +104,9 @@
             </div>
           </div>
           <div class="team-card">
-            <div class="team-avatar" style="background:linear-gradient(135deg,#ff7f0e,#ffb74d);">KP</div>
+            <div class="team-sm">
+                <img src="/static/images/team/Kimani_Peter_mini.png" alt="FarmersPulse Logo">
+              </div>
             <div class="team-info">
               <h4>Kimani Peter</h4>
               <span class="team-role">Lead Developer</span>
@@ -105,7 +114,9 @@
             </div>
           </div>
           <div class="team-card">
-            <div class="team-avatar" style="background:linear-gradient(135deg,#6a1b9a,#ab47bc);">JW</div>
+            <div class="team-sm">
+                <img src="/static/images/team/James_Wachira.png" alt="FarmersPulse Logo">
+              </div>
             <div class="team-info">
               <h4>James Wachira</h4>
               <span class="team-role">Colleague</span>

@@ -49,6 +49,9 @@
     <header class="fp-topnav">
       <div class="topnav-left">
         <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+        <div class="sidebar-logo-phone">
+          <span class="logo-green">Farmers</span><span class="logo-orange">Pulse</span>
+        </div>
         <form class="search-form" method="GET" action="{{ url_for('dashboard') }}">
           <i class="fas fa-search"></i>
           <input type="text" name="search" placeholder="Search advisories, alerts..." value="{{ search }}">
@@ -137,7 +140,9 @@
           {% if p['source'] == 'ai_model' %}<div class="ai-badge"><i class="fas fa-robot"></i> AI</div>{% endif %}
           <div class="post-meta">
             <div class="post-author">
-              <div class="avatar-sm">F</div>
+              <div class="avatar-sm">
+                <img src="/static/images/FarmersPulse_logo.png" alt="FarmersPulse Logo">
+              </div>
               <div><strong>FarmersPulse</strong><span>{{ p['created_at'][:16] }}</span></div>
             </div>
             <span class="post-category cat-{{ p['category'] or 'general' }}">{{ p['category'] or 'General' }}</span>

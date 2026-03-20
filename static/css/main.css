@@ -152,7 +152,6 @@ button {
 .sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 6px;
   padding: 24px 20px 20px;
   font-family: var(--font-display);
   font-size: 18px;
@@ -287,6 +286,9 @@ button {
   color: var(--text);
   padding: 4px 8px;
 }
+  .sidebar-logo-phone {
+    display: none;
+    }
 
 .search-form {
   display: flex;
@@ -315,6 +317,7 @@ button {
   color: var(--text);
   font-family: var(--font);
 }
+
 
 /* NOTIFICATIONS */
 .notif-btn {
@@ -661,8 +664,8 @@ button {
 }
 
 .avatar-sm {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--green-soft);
   border: 2px solid var(--green);
@@ -673,12 +676,36 @@ button {
   font-size: 14px;
   color: var(--green);
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .avatar-sm img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: scale-down;
+  border-radius: 50%;
+}
+
+.team-sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--orange-soft);
+  border: 2px solid var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--orange);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.team-sm img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
   border-radius: 50%;
 }
 
@@ -2209,9 +2236,44 @@ button {
     padding: 6px 10px;
     font-size: 12px;
   }
-
   .fp-topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px 14px;
+    gap: 10px;
+  }
+
+  /* Left side: hamburger + mobile logo */
+  .topnav-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sidebar-logo-phone {
+    display: flex;
+    align-items: center;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  /* Right side: notifications + profile + search */
+  .topnav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  /* Make search appear neatly on right */
+  .search-form {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
   }
 }
 
@@ -2439,6 +2501,10 @@ button {
     padding: 14px;
     gap: 14px;
   }
+  .sidebar-logo-phone{
+  display: flex;
+  font-weight: 900;
+}
 
   .user-chip {
     visibility: hidden;
