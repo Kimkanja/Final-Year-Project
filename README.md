@@ -1,5 +1,8 @@
 # FarmersPulse — Complete Setup & AI Integration Guide
 
+![Hero Section](./screenshotsherosection.png)
+
+
 ## Quick Start
 
 ```bash
