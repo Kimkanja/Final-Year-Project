@@ -1,6 +1,6 @@
 # FarmersPulse — Complete Setup & AI Integration Guide
 
-![Hero Section](./screenshotsherosection.png)
+![Hero Section](farmerspulse.png)
 
 
 ## Quick Start
